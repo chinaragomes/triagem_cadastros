@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Triagem de Cadastros</title>
+    <title>Triagem de Cadastros - Sistema Completo</title>
     <style>
         * {
             margin: 0;
@@ -26,8 +26,8 @@
 
         .header {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 40px 20px;
+            margin-bottom: 30px;
+            padding: 30px 20px;
         }
 
         .header h1 {
@@ -45,13 +45,48 @@
             font-size: 1.1em;
         }
 
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: #8b949e;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: #c9d1d9;
+        }
+
+        .tab.active {
+            color: #10a37f;
+            border-bottom-color: #10a37f;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .upload-section {
             background: #161b22;
             border-radius: 12px;
             padding: 40px;
             margin-bottom: 30px;
             border: 1px solid #30363d;
-            transition: all 0.3s ease;
         }
 
         .upload-section.hidden {
@@ -64,7 +99,7 @@
             padding: 50px 40px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             background: #0d1117;
         }
 
@@ -76,7 +111,6 @@
         .upload-area.dragover {
             border-color: #10a37f;
             background: rgba(16, 163, 127, 0.1);
-            transform: scale(1.01);
         }
 
         .upload-icon {
@@ -89,13 +123,11 @@
             color: #c9d1d9;
             margin-bottom: 10px;
             font-size: 1.2em;
-            font-weight: 500;
         }
 
         .upload-area p {
             color: #8b949e;
             margin-bottom: 20px;
-            font-size: 0.95em;
         }
 
         input[type="file"] {
@@ -126,17 +158,6 @@
             cursor: not-allowed;
         }
 
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-        }
-
-        .btn-secondary:hover {
-            background: #161b22;
-            border-color: #8b949e;
-        }
-
         .file-name {
             margin-top: 20px;
             padding: 12px 20px;
@@ -144,7 +165,7 @@
             border-radius: 6px;
             color: #10a37f;
             font-weight: 500;
-            display: inline-block;
+            display: none;
         }
 
         .loading {
@@ -170,6 +191,35 @@
 
         .results {
             display: none;
+        }
+
+        .info-bar {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-label {
+            color: #8b949e;
+            font-size: 0.9em;
+        }
+
+        .info-value {
+            color: #c9d1d9;
+            font-weight: 600;
         }
 
         .stats-grid {
@@ -202,7 +252,8 @@
             transition: transform 0.3s;
         }
 
-        .stat-card:hover::before {
+        .stat-card:hover::before,
+        .stat-card.active::before {
             transform: scaleX(1);
         }
 
@@ -215,10 +266,6 @@
         .stat-card.active {
             border-color: #10a37f;
             background: rgba(16, 163, 127, 0.05);
-        }
-
-        .stat-card.active::before {
-            transform: scaleX(1);
         }
 
         .stat-card.incomplete::before {
@@ -329,7 +376,6 @@
 
         .table-container {
             overflow-x: auto;
-            border-radius: 8px;
         }
 
         table {
@@ -389,7 +435,6 @@
             margin-bottom: 20px;
             display: none;
             border-left: 4px solid;
-            font-size: 0.95em;
         }
 
         .alert.success {
@@ -422,12 +467,6 @@
             opacity: 0.5;
         }
 
-        .empty-state h3 {
-            font-size: 1.3em;
-            margin-bottom: 10px;
-            color: #c9d1d9;
-        }
-
         .footer {
             text-align: center;
             padding: 40px 20px;
@@ -437,151 +476,20 @@
             font-size: 0.9em;
         }
 
-        .footer a {
-            color: #10a37f;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer a:hover {
-            color: #0d8968;
-        }
-
-        @media (max-width: 1200px) {
-            .container {
-                padding: 0 15px;
-            }
-        }
-
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
+            .tabs {
+                overflow-x: auto;
             }
-
-            .header {
-                padding: 30px 15px;
-                margin-bottom: 20px;
+            .tab {
+                padding: 12px 20px;
+                white-space: nowrap;
             }
-
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .header p {
-                font-size: 0.95em;
-            }
-
-            .upload-section {
-                padding: 20px;
-            }
-
-            .upload-area {
-                padding: 30px 15px;
-            }
-
-            .upload-icon {
-                font-size: 2.5em;
-            }
-
-            .upload-area h3 {
-                font-size: 1em;
-            }
-
-            .upload-area p {
-                font-size: 0.85em;
-            }
-
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9em;
-            }
-
             .stats-grid {
                 grid-template-columns: 1fr;
-                gap: 15px;
             }
-
-            .stat-card {
-                padding: 20px;
-            }
-
-            .stat-number {
-                font-size: 2.5em;
-            }
-
-            .stat-percentage {
-                font-size: 1em;
-            }
-
-            .table-section {
-                padding: 20px;
-                overflow-x: auto;
-            }
-
-            .table-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .table-header h2 {
-                font-size: 1.2em;
-            }
-
-            .table-container {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
             table {
                 font-size: 0.75em;
                 min-width: 600px;
-            }
-
-            th, td {
-                padding: 8px;
-                white-space: nowrap;
-            }
-
-            .missing-field {
-                font-size: 0.8em;
-                padding: 3px 6px;
-            }
-
-            .footer {
-                padding: 30px 15px;
-                margin-top: 40px;
-                font-size: 0.85em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.5em;
-            }
-
-            .upload-area {
-                padding: 20px 10px;
-            }
-
-            .stat-card {
-                padding: 15px;
-            }
-
-            .stat-number {
-                font-size: 2em;
-            }
-
-            .table-section {
-                padding: 15px;
-            }
-
-            table {
-                font-size: 0.7em;
-            }
-
-            th, td {
-                padding: 6px;
             }
         }
     </style>
@@ -590,110 +498,52 @@
     <div class="container">
         <div class="header">
             <h1>📊 Triagem de Cadastros</h1>
-            <p>Valide e analise seus cadastros de clientes de forma inteligente</p>
+            <p>Sistema completo com histórico em banco de dados</p>
         </div>
 
-        <div class="upload-section" id="uploadSection">
-            <div class="alert" id="alert"></div>
-            
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📁</div>
-                <h3>Arraste seu arquivo CSV aqui</h3>
-                <p>ou clique no botão abaixo para selecionar</p>
-                <button class="btn" id="selectFileBtn">
-                    Escolher Arquivo
-                </button>
-                <input type="file" id="fileInput" accept=".csv">
-                <div class="file-name" id="fileName" style="display: none;"></div>
+        <div class="tabs">
+            <button class="tab active" data-tab="upload">📤 Novo Upload</button>
+            <button class="tab" data-tab="historico">📜 Último Processamento</button>
+        </div>
+
+        <!-- ABA UPLOAD -->
+        <div class="tab-content active" data-content="upload">
+            <div class="upload-section" id="uploadSection">
+                <div class="alert" id="alertUpload"></div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <h3>Arraste seu arquivo CSV aqui</h3>
+                    <p>ou clique no botão abaixo</p>
+                    <button class="btn" id="selectFileBtn">Escolher Arquivo</button>
+                    <input type="file" id="fileInput" accept=".csv">
+                    <div class="file-name" id="fileName"></div>
+                </div>
+
+                <div class="loading" id="loadingUpload">
+                    <div class="spinner"></div>
+                    <p>Processando e salvando no banco...</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 25px;">
+                    <button class="btn" id="uploadBtn" disabled>
+                        <span>📤</span>
+                        <span>Enviar e Salvar</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="loading" id="loading">
+            <div class="results" id="resultsUpload"></div>
+        </div>
+
+        <!-- ABA HISTÓRICO -->
+        <div class="tab-content" data-content="historico">
+            <div class="alert" id="alertHistorico"></div>
+            <div class="loading" id="loadingHistorico">
                 <div class="spinner"></div>
-                <p>Processando arquivo, aguarde...</p>
+                <p>Carregando dados do banco...</p>
             </div>
-
-            <div style="text-align: center; margin-top: 25px;">
-                <button class="btn" id="uploadBtn" disabled>
-                    <span>📤</span>
-                    <span>Enviar para Análise</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="results" id="results">
-            <div class="stats-grid">
-                <div class="stat-card complete" id="completeCard">
-                    <div class="stat-header">
-                        <h3>Cadastros Completos</h3>
-                        <div class="stat-icon">✅</div>
-                    </div>
-                    <div class="stat-number" id="completeCount">0</div>
-                    <div class="stat-percentage" id="completePercentage">0%</div>
-                    <div class="stat-hint">Clique para visualizar</div>
-                </div>
-                <div class="stat-card incomplete" id="incompleteCard">
-                    <div class="stat-header">
-                        <h3>Cadastros Incompletos</h3>
-                        <div class="stat-icon">⚠️</div>
-                    </div>
-                    <div class="stat-number" id="incompleteCount">0</div>
-                    <div class="stat-percentage" id="incompletePercentage">0%</div>
-                    <div class="stat-hint">Clique para visualizar</div>
-                </div>
-            </div>
-
-            <div class="table-section" id="completesTable">
-                <div class="table-header">
-                    <h2>
-                        <span>✅</span>
-                        <span>Cadastros Completos</span>
-                        <span class="badge" id="completeBadge">0</span>
-                    </h2>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Gênero</th>
-                                <th>Telefone</th>
-                                <th>E-mail</th>
-                                <th>Data Nascimento</th>
-                                <th>CEP</th>
-                            </tr>
-                        </thead>
-                        <tbody id="completeTableBody">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="table-section hidden" id="incompletesTable">
-                <div class="table-header">
-                    <h2>
-                        <span>⚠️</span>
-                        <span>Cadastros Incompletos</span>
-                        <span class="badge red" id="incompleteBadge">0</span>
-                    </h2>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Gênero</th>
-                                <th>Telefone</th>
-                                <th>E-mail</th>
-                                <th>Data Nascimento</th>
-                                <th>CEP</th>
-                                <th>Campos Faltantes</th>
-                            </tr>
-                        </thead>
-                        <tbody id="incompleteTableBody">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="results" id="resultsHistorico"></div>
         </div>
 
         <footer class="footer">
@@ -702,246 +552,265 @@
     </div>
 
     <script>
-        // Atualizar ano automaticamente
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        const WEBHOOK_URL = 'https://n8n-webhook.chinaragomes.com/webhook/ece3d5b1-476b-4475-9aaf-0791daa2792f';
-        
+        const WEBHOOK_UPLOAD = 'https://n8n-webhook.chinaragomes.com/webhook/ece3d5b1-476b-4475-9aaf-0791daa2792f';
+        const WEBHOOK_GET = 'https://n8n-webhook.chinaragomes.com/webhook/get-triagem-data';
+
         let selectedFile = null;
-        let currentData = null;
-        
+
+        // NAVEGAÇÃO ENTRE ABAS
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelector(`[data-content="${tabName}"]`).classList.add('active');
+                
+                if (tabName === 'historico') {
+                    loadHistorico();
+                }
+            });
+        });
+
+        // UPLOAD DE ARQUIVO
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
         const selectFileBtn = document.getElementById('selectFileBtn');
-        const fileName = document.getElementById('fileName');
         const uploadBtn = document.getElementById('uploadBtn');
-        const loading = document.getElementById('loading');
-        const results = document.getElementById('results');
-        const alert = document.getElementById('alert');
-        
-        const completeCard = document.getElementById('completeCard');
-        const incompleteCard = document.getElementById('incompleteCard');
-        const completesTable = document.getElementById('completesTable');
-        const incompletesTable = document.getElementById('incompletesTable');
 
-        // Fix: Botão de seleção de arquivo
-        selectFileBtn.addEventListener('click', (e) => {
+        selectFileBtn.onclick = (e) => {
             e.stopPropagation();
             fileInput.click();
-        });
+        };
 
-        // Área de upload clicável
-        uploadArea.addEventListener('click', (e) => {
-            if (e.target !== selectFileBtn) {
-                fileInput.click();
-            }
-        });
-        
-        // Drag and drop
-        uploadArea.addEventListener('dragover', (e) => {
+        uploadArea.onclick = (e) => {
+            if (e.target !== selectFileBtn) fileInput.click();
+        };
+
+        uploadArea.ondragover = (e) => {
             e.preventDefault();
             uploadArea.classList.add('dragover');
-        });
+        };
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
+        uploadArea.ondragleave = () => uploadArea.classList.remove('dragover');
 
-        uploadArea.addEventListener('drop', (e) => {
+        uploadArea.ondrop = (e) => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFileSelect(files[0]);
-            }
-        });
+            if (e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]);
+        };
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFileSelect(e.target.files[0]);
-            }
-        });
+        fileInput.onchange = (e) => {
+            if (e.target.files[0]) handleFileSelect(e.target.files[0]);
+        };
 
         function handleFileSelect(file) {
             if (!file.name.endsWith('.csv')) {
-                showAlert('⚠️ Por favor, selecione um arquivo CSV válido.', 'error');
+                showAlert('⚠️ Selecione um arquivo CSV válido', 'error', 'Upload');
                 return;
             }
-
             selectedFile = file;
-            fileName.textContent = `📄 ${file.name}`;
-            fileName.style.display = 'inline-block';
+            document.getElementById('fileName').textContent = `📄 ${file.name}`;
+            document.getElementById('fileName').style.display = 'inline-block';
             uploadBtn.disabled = false;
-            hideAlert();
+            hideAlert('Upload');
         }
 
-        uploadBtn.addEventListener('click', async () => {
+        uploadBtn.onclick = async () => {
             if (!selectedFile) return;
 
             const formData = new FormData();
             formData.append('file', selectedFile);
 
-            loading.style.display = 'block';
-            results.style.display = 'none';
+            document.getElementById('loadingUpload').style.display = 'block';
+            document.getElementById('resultsUpload').style.display = 'none';
             uploadBtn.disabled = true;
-            hideAlert();
 
             try {
-                const response = await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erro HTTP: ${response.status}`);
-                }
-
-                const data = await response.json();
-                currentData = data;
-                displayResults(data);
+                const res = await fetch(WEBHOOK_UPLOAD, { method: 'POST', body: formData });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 
-                // Esconder seção de upload após processamento
+                const data = await res.json();
+                displayResults(data, 'upload');
                 document.getElementById('uploadSection').classList.add('hidden');
-                
-                showAlert('✅ Arquivo processado com sucesso!', 'success');
-            } catch (error) {
-                showAlert(`❌ Erro ao processar arquivo: ${error.message}`, 'error');
-                console.error('Erro:', error);
+                showAlert('✅ Salvo no banco com sucesso!', 'success', 'Upload');
+            } catch (err) {
+                showAlert(`❌ Erro: ${err.message}`, 'error', 'Upload');
             } finally {
-                loading.style.display = 'none';
+                document.getElementById('loadingUpload').style.display = 'none';
                 uploadBtn.disabled = false;
             }
-        });
+        };
 
-        // Cards clicáveis
-        completeCard.addEventListener('click', () => {
-            showCompletes();
-        });
+        // CARREGAR HISTÓRICO
+        async function loadHistorico() {
+            document.getElementById('loadingHistorico').style.display = 'block';
+            document.getElementById('resultsHistorico').style.display = 'none';
+            hideAlert('Historico');
 
-        incompleteCard.addEventListener('click', () => {
-            showIncompletes();
-        });
-
-        function showCompletes() {
-            completeCard.classList.add('active');
-            incompleteCard.classList.remove('active');
-            completesTable.classList.remove('hidden');
-            incompletesTable.classList.add('hidden');
+            try {
+                const res = await fetch(WEBHOOK_GET);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                
+                const data = await res.json();
+                displayResults(data, 'historico');
+            } catch (err) {
+                showAlert(`❌ Erro: ${err.message}`, 'error', 'Historico');
+            } finally {
+                document.getElementById('loadingHistorico').style.display = 'none';
+            }
         }
 
-        function showIncompletes() {
-            incompleteCard.classList.add('active');
-            completeCard.classList.remove('active');
-            incompletesTable.classList.remove('hidden');
-            completesTable.classList.add('hidden');
-        }
-
-        function displayResults(data) {
+        // EXIBIR RESULTADOS
+        function displayResults(data, context) {
+            const prefix = context === 'upload' ? 'Upload' : 'Historico';
+            const container = document.getElementById(`results${prefix}`);
+            
             const total = data.total || 0;
             const completos = data.completos || 0;
             const incompletos = data.incompletos || 0;
+            const pctCompleto = total > 0 ? ((completos / total) * 100).toFixed(1) : 0;
+            const pctIncompleto = total > 0 ? ((incompletos / total) * 100).toFixed(1) : 0;
 
-            const completePercentage = total > 0 ? ((completos / total) * 100).toFixed(1) : 0;
-            const incompletePercentage = total > 0 ? ((incompletos / total) * 100).toFixed(1) : 0;
+            container.innerHTML = `
+                <div class="info-bar">
+                    <div class="info-item">
+                        <span class="info-label">📁 Arquivo:</span>
+                        <span class="info-value">${data.nome_arquivo || 'N/A'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📅 Data:</span>
+                        <span class="info-value">${data.data_processamento ? new Date(data.data_processamento).toLocaleString('pt-BR') : new Date().toLocaleString('pt-BR')}</span>
+                    </div>
+                    ${context === 'historico' ? '<div class="info-item"><button class="btn" onclick="loadHistorico()"><span>🔄</span><span>Atualizar</span></button></div>' : ''}
+                </div>
 
-            document.getElementById('completeCount').textContent = completos;
-            document.getElementById('completePercentage').textContent = `${completePercentage}%`;
-            document.getElementById('incompleteCount').textContent = incompletos;
-            document.getElementById('incompletePercentage').textContent = `${incompletePercentage}%`;
-            document.getElementById('completeBadge').textContent = completos;
-            document.getElementById('incompleteBadge').textContent = incompletos;
+                <div class="stats-grid">
+                    <div class="stat-card complete" onclick="showTable('${context}', 'complete')">
+                        <div class="stat-header">
+                            <h3>Cadastros Completos</h3>
+                            <div class="stat-icon">✅</div>
+                        </div>
+                        <div class="stat-number">${completos}</div>
+                        <div class="stat-percentage">${pctCompleto}%</div>
+                        <div class="stat-hint">Clique para visualizar</div>
+                    </div>
+                    <div class="stat-card incomplete" onclick="showTable('${context}', 'incomplete')">
+                        <div class="stat-header">
+                            <h3>Cadastros Incompletos</h3>
+                            <div class="stat-icon">⚠️</div>
+                        </div>
+                        <div class="stat-number">${incompletos}</div>
+                        <div class="stat-percentage">${pctIncompleto}%</div>
+                        <div class="stat-hint">Clique para visualizar</div>
+                    </div>
+                </div>
 
-            // Preencher tabela de completos
-            const completeTableBody = document.getElementById('completeTableBody');
-            completeTableBody.innerHTML = '';
+                <div class="table-section" id="table-${context}-complete">
+                    <div class="table-header">
+                        <h2><span>✅</span><span>Cadastros Completos</span><span class="badge">${completos}</span></h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Gênero</th>
+                                    <th>Telefone</th>
+                                    <th>E-mail</th>
+                                    <th>Data Nascimento</th>
+                                    <th>CEP</th>
+                                </tr>
+                            </thead>
+                            <tbody>${renderRows(data.cadastros_completos || [], false)}</tbody>
+                        </table>
+                    </div>
+                </div>
 
-            if (data.cadastros_completos && data.cadastros_completos.length > 0) {
-                data.cadastros_completos.forEach(cadastro => {
-                    const row = createTableRow(cadastro, false);
-                    completeTableBody.appendChild(row);
-                });
-            } else {
-                completeTableBody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="empty-state-icon">🎉</div><h3>Nenhum cadastro completo encontrado</h3></td></tr>';
-            }
+                <div class="table-section hidden" id="table-${context}-incomplete">
+                    <div class="table-header">
+                        <h2><span>⚠️</span><span>Cadastros Incompletos</span><span class="badge red">${incompletos}</span></h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Gênero</th>
+                                    <th>Telefone</th>
+                                    <th>E-mail</th>
+                                    <th>Data Nascimento</th>
+                                    <th>CEP</th>
+                                    <th>Campos Faltantes</th>
+                                </tr>
+                            </thead>
+                            <tbody>${renderRows(data.cadastros_incompletos || [], true)}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
 
-            // Preencher tabela de incompletos
-            const incompleteTableBody = document.getElementById('incompleteTableBody');
-            incompleteTableBody.innerHTML = '';
-
-            if (data.cadastros_incompletos && data.cadastros_incompletos.length > 0) {
-                data.cadastros_incompletos.forEach(cadastro => {
-                    const row = createTableRow(cadastro, true);
-                    incompleteTableBody.appendChild(row);
-                });
-            } else {
-                incompleteTableBody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="empty-state-icon">✨</div><h3>Todos os cadastros estão completos!</h3><p>Parabéns! Não há cadastros com dados faltantes.</p></td></tr>';
-            }
-
-            results.style.display = 'block';
-            
-            // Mostrar automaticamente a tabela com mais dados
-            if (incompletos > completos) {
-                showIncompletes();
-            } else {
-                showCompletes();
-            }
+            container.style.display = 'block';
+            showTable(context, incompletos > completos ? 'incomplete' : 'complete');
         }
 
-        function createTableRow(cadastro, showMissing) {
-            const row = document.createElement('tr');
-            const dados = cadastro.dados || {};
-            
-            function getValue(obj, possibleKeys) {
-                for (let key of possibleKeys) {
-                    if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {
-                        return obj[key];
-                    }
+        function renderRows(cadastros, showMissing) {
+            if (!cadastros.length) {
+                const msg = showMissing ? '✨ Todos completos!' : '🎉 Nenhum completo';
+                return `<tr><td colspan="${showMissing ? 7 : 6}" class="empty-state"><div class="empty-state-icon">${showMissing ? '✨' : '🎉'}</div><h3>${msg}</h3></td></tr>`;
+            }
+
+            return cadastros.map(c => {
+                const d = c.dados || {};
+                const getValue = (keys) => {
+                    for (let k of keys) if (d[k]) return d[k];
+                    return '-';
+                };
+
+                const nome = getValue(['Nome', 'nome']);
+                const genero = getValue(['Gênero', 'Genero', 'genero']);
+                const tel = getValue(['Telefone 1', 'Telefone', 'telefone']);
+                const email = getValue(['E-mail', 'Email', 'email']);
+                const data = getValue(['Data de Nascimento', 'Data Nascimento']);
+                const cep = getValue(['CEP', 'cep']);
+
+                if (showMissing) {
+                    const missing = (c.campos_faltantes || []).map(f => `<span class="missing-field">${f}</span>`).join(' ');
+                    return `<tr><td>${nome}</td><td>${genero}</td><td>${tel}</td><td>${email}</td><td>${data}</td><td>${cep}</td><td>${missing}</td></tr>`;
                 }
-                return '-';
-            }
-            
-            const nome = getValue(dados, ['Nome', 'nome', 'NOME']);
-            const genero = getValue(dados, ['Gênero', 'Genero', 'genero', 'GENERO']);
-            const telefone = getValue(dados, ['Telefone 1', 'Telefone', 'telefone', 'TELEFONE']);
-            const email = getValue(dados, ['E-mail', 'Email', 'email', 'E-MAIL', 'EMAIL']);
-            const dataNasc = getValue(dados, ['Data de Nascimento', 'Data Nascimento', 'DataNascimento', 'data de nascimento']);
-            const cep = getValue(dados, ['CEP', 'cep', 'Cep']);
-            
-            if (showMissing) {
-                row.innerHTML = `
-                    <td>${nome}</td>
-                    <td>${genero}</td>
-                    <td>${telefone}</td>
-                    <td>${email}</td>
-                    <td>${dataNasc}</td>
-                    <td>${cep}</td>
-                    <td>
-                        ${cadastro.campos_faltantes.map(campo => 
-                            `<span class="missing-field">${campo}</span>`
-                        ).join(' ')}
-                    </td>
-                `;
-            } else {
-                row.innerHTML = `
-                    <td>${nome}</td>
-                    <td>${genero}</td>
-                    <td>${telefone}</td>
-                    <td>${email}</td>
-                    <td>${dataNasc}</td>
-                    <td>${cep}</td>
-                `;
-            }
-            
-            return row;
+                return `<tr><td>${nome}</td><td>${genero}</td><td>${tel}</td><td>${email}</td><td>${data}</td><td>${cep}</td></tr>`;
+            }).join('');
         }
 
-        function showAlert(message, type) {
-            alert.innerHTML = `<span>${message}</span>`;
+        function showTable(context, type) {
+            const completeTable = document.getElementById(`table-${context}-complete`);
+            const incompleteTable = document.getElementById(`table-${context}-incomplete`);
+            const completeCard = document.querySelector(`[data-content="${context}"] .stat-card.complete`);
+            const incompleteCard = document.querySelector(`[data-content="${context}"] .stat-card.incomplete`);
+
+            if (type === 'complete') {
+                completeTable.classList.remove('hidden');
+                incompleteTable.classList.add('hidden');
+                completeCard.classList.add('active');
+                incompleteCard.classList.remove('active');
+            } else {
+                incompleteTable.classList.remove('hidden');
+                completeTable.classList.add('hidden');
+                incompleteCard.classList.add('active');
+                completeCard.classList.remove('active');
+            }
+        }
+
+        function showAlert(msg, type, context) {
+            const alert = document.getElementById(`alert${context}`);
+            alert.innerHTML = `<span>${msg}</span>`;
             alert.className = `alert ${type} show`;
         }
 
-        function hideAlert() {
-            alert.className = 'alert';
+        function hideAlert(context) {
+            document.getElementById(`alert${context}`).className = 'alert';
         }
     </script>
 </body>
