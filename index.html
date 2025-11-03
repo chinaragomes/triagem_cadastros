@@ -2,75 +2,134 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Triagem de Cadastros - Sistema Completo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #151515;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: #171717;
+            --bg-hover: #1f1f1f;
+            --border-primary: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(16, 163, 127, 0.4);
+            --text-primary: #f5f5f5;
+            --text-secondary: #a8a8a8;
+            --text-tertiary: #6e6e6e;
+            --accent-primary: #10a37f;
+            --accent-hover: #0d8968;
+            --accent-muted: rgba(16, 163, 127, 0.12);
+            --error: #ef4444;
+            --error-muted: rgba(239, 68, 68, 0.12);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.6);
+            --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.7);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-            background: #0d1117;
-            color: #c9d1d9;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: linear-gradient(180deg, rgba(16, 163, 127, 0.03) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
+            padding: 40px 30px;
+            position: relative;
+            z-index: 1;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 30px 20px;
+            margin-bottom: 60px;
+            padding: 0;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            font-weight: 600;
-            background: linear-gradient(135deg, #10a37f 0%, #1a7f64 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
+            font-size: 3.2em;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
         }
 
         .header p {
-            color: #8b949e;
-            font-size: 1.1em;
+            color: var(--text-secondary);
+            font-size: 1.15em;
+            font-weight: 400;
+            letter-spacing: 0.01em;
         }
 
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #30363d;
+            gap: 8px;
+            margin-bottom: 40px;
+            padding: 6px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-primary);
         }
 
         .tab {
             background: transparent;
             border: none;
-            color: #8b949e;
-            padding: 15px 30px;
+            color: var(--text-secondary);
+            padding: 14px 28px;
             cursor: pointer;
-            font-size: 1em;
-            font-weight: 500;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
+            font-size: 0.95em;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
         .tab:hover {
-            color: #c9d1d9;
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
         }
 
         .tab.active {
-            color: #10a37f;
-            border-bottom-color: #10a37f;
+            background: var(--accent-primary);
+            color: white;
         }
 
         .tab-content {
@@ -82,11 +141,12 @@
         }
 
         .upload-section {
-            background: #161b22;
-            border-radius: 12px;
-            padding: 40px;
-            margin-bottom: 30px;
-            border: 1px solid #30363d;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 48px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-primary);
+            box-shadow: var(--shadow-sm);
         }
 
         .upload-section.hidden {
@@ -94,23 +154,25 @@
         }
 
         .upload-area {
-            border: 2px dashed #30363d;
-            border-radius: 8px;
-            padding: 50px 40px;
+            border: 2px dashed var(--border-primary);
+            border-radius: 20px;
+            padding: 60px 40px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
-            background: #0d1117;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-secondary);
+            position: relative;
+            overflow: hidden;
         }
 
         .upload-area:hover {
-            border-color: #10a37f;
-            background: rgba(16, 163, 127, 0.05);
+            border-color: var(--border-hover);
+            background: var(--bg-tertiary);
         }
 
         .upload-area.dragover {
-            border-color: #10a37f;
-            background: rgba(16, 163, 127, 0.1);
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
         }
 
         .upload-icon {
@@ -120,14 +182,21 @@
         }
 
         .upload-area h3 {
-            color: #c9d1d9;
-            margin-bottom: 10px;
-            font-size: 1.2em;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 1.3em;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 1;
         }
 
         .upload-area p {
-            color: #8b949e;
-            margin-bottom: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 1.05em;
+            position: relative;
+            z-index: 1;
         }
 
         input[type="file"] {
@@ -135,53 +204,73 @@
         }
 
         .btn {
-            background: #10a37f;
+            background: var(--accent-primary);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
+            padding: 14px 28px;
+            border-radius: 12px;
             font-size: 0.95em;
             cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
+            transition: all 0.2s ease;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            box-shadow: var(--shadow-sm);
+            outline: none;
         }
 
         .btn:hover {
-            background: #0d8968;
+            background: var(--accent-hover);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
         }
 
+        .btn:disabled:hover {
+            background: var(--accent-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
         .file-name {
-            margin-top: 20px;
-            padding: 12px 20px;
-            background: rgba(16, 163, 127, 0.1);
-            border-radius: 6px;
-            color: #10a37f;
-            font-weight: 500;
+            margin-top: 24px;
+            padding: 14px 24px;
+            background: var(--accent-muted);
+            border-radius: 12px;
+            color: var(--accent-primary);
+            font-weight: 600;
             display: none;
+            border: 1px solid var(--border-primary);
+            position: relative;
+            z-index: 1;
         }
 
         .loading {
             display: none;
             text-align: center;
-            margin: 30px 0;
+            margin: 40px 0;
         }
 
         .spinner {
-            border: 3px solid #30363d;
-            border-top: 3px solid #10a37f;
+            border: 3px solid var(--bg-tertiary);
+            border-top: 3px solid var(--accent-primary);
             border-radius: 50%;
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
         }
 
         @keyframes spin {
@@ -194,16 +283,17 @@
         }
 
         .info-bar {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 24px 32px;
+            margin-bottom: 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 24px;
+            box-shadow: var(--shadow-sm);
         }
 
         .info-item {
@@ -213,13 +303,17 @@
         }
 
         .info-label {
-            color: #8b949e;
-            font-size: 0.9em;
+            color: var(--text-tertiary);
+            font-size: 0.85em;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .info-value {
-            color: #c9d1d9;
+            color: var(--text-primary);
             font-weight: 600;
+            font-size: 1.05em;
         }
 
         .stats-grid {
@@ -230,14 +324,15 @@
         }
 
         .stat-card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 32px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow-sm);
         }
 
         .stat-card::before {
@@ -246,10 +341,10 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #10a37f, #1a7f64);
+            height: 3px;
+            background: var(--accent-primary);
             transform: scaleX(0);
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
         .stat-card:hover::before,
@@ -258,28 +353,28 @@
         }
 
         .stat-card:hover {
-            border-color: #10a37f;
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(16, 163, 127, 0.2);
+            border-color: var(--border-hover);
+            background: var(--bg-hover);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-card.active {
-            border-color: #10a37f;
-            background: rgba(16, 163, 127, 0.05);
+            border-color: var(--border-hover);
+            background: var(--bg-hover);
         }
 
         .stat-card.incomplete::before {
-            background: linear-gradient(90deg, #ef4444, #dc2626);
+            background: var(--error);
         }
 
         .stat-card.incomplete:hover {
-            border-color: #ef4444;
-            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-card.incomplete.active {
-            border-color: #ef4444;
-            background: rgba(239, 68, 68, 0.05);
+            border-color: rgba(239, 68, 68, 0.4);
+            background: var(--bg-hover);
         }
 
         .stat-header {
@@ -290,11 +385,11 @@
         }
 
         .stat-card h3 {
-            color: #8b949e;
-            font-size: 0.9em;
+            color: var(--text-tertiary);
+            font-size: 0.8em;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
+            letter-spacing: 0.08em;
+            font-weight: 700;
         }
 
         .stat-icon {
@@ -303,39 +398,42 @@
         }
 
         .stat-number {
-            font-size: 3em;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-size: 3.5em;
+            font-weight: 800;
+            margin-bottom: 10px;
             line-height: 1;
+            letter-spacing: -0.02em;
         }
 
         .stat-card.complete .stat-number {
-            color: #10a37f;
+            color: var(--accent-primary);
         }
 
         .stat-card.incomplete .stat-number {
-            color: #ef4444;
+            color: var(--error);
         }
 
         .stat-percentage {
-            font-size: 1.1em;
-            color: #8b949e;
-            font-weight: 500;
+            font-size: 1.15em;
+            color: var(--text-secondary);
+            font-weight: 600;
         }
 
         .stat-hint {
-            margin-top: 12px;
+            margin-top: 14px;
             font-size: 0.85em;
-            color: #8b949e;
-            opacity: 0.7;
+            color: var(--text-tertiary);
+            opacity: 0.8;
+            font-weight: 500;
         }
 
         .table-section {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow-sm);
         }
 
         .table-section.hidden {
@@ -346,32 +444,36 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #30363d;
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-primary);
         }
 
         .table-header h2 {
-            color: #c9d1d9;
-            font-size: 1.5em;
-            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.6em;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            letter-spacing: -0.01em;
         }
 
         .badge {
-            background: rgba(16, 163, 127, 0.15);
-            color: #10a37f;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 600;
+            background: var(--accent-muted);
+            color: var(--accent-primary);
+            padding: 6px 16px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border: 1px solid var(--border-primary);
         }
 
         .badge.red {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
+            background: var(--error-muted);
+            color: var(--error);
+            border: 1px solid var(--border-primary);
         }
 
         .table-container {
@@ -385,25 +487,26 @@
         }
 
         thead {
-            background: #0d1117;
+            background: var(--bg-secondary);
         }
 
         th {
-            padding: 16px;
+            padding: 18px;
             text-align: left;
-            font-weight: 600;
-            color: #8b949e;
+            font-weight: 700;
+            color: var(--text-tertiary);
             text-transform: uppercase;
-            font-size: 0.75em;
-            letter-spacing: 0.5px;
+            font-size: 0.7em;
+            letter-spacing: 0.08em;
             white-space: nowrap;
-            border-bottom: 1px solid #30363d;
+            border-bottom: 2px solid var(--border-primary);
         }
 
         td {
-            padding: 16px;
-            border-bottom: 1px solid #21262d;
-            color: #c9d1d9;
+            padding: 18px;
+            border-bottom: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            font-size: 0.95em;
         }
 
         tbody tr {
@@ -411,7 +514,7 @@
         }
 
         tbody tr:hover {
-            background: rgba(16, 163, 127, 0.05);
+            background: var(--bg-tertiary);
         }
 
         tbody tr:last-child td {
@@ -419,34 +522,35 @@
         }
 
         .missing-field {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.85em;
+            background: var(--error-muted);
+            color: var(--error);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8em;
             display: inline-block;
-            margin: 2px;
-            font-weight: 500;
+            margin: 3px;
+            font-weight: 600;
+            border: 1px solid var(--border-primary);
         }
 
         .alert {
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 18px 24px;
+            border-radius: 14px;
+            margin-bottom: 24px;
             display: none;
-            border-left: 4px solid;
+            border: 1px solid;
         }
 
         .alert.success {
-            background: rgba(16, 163, 127, 0.1);
-            color: #10a37f;
-            border-color: #10a37f;
+            background: var(--accent-muted);
+            color: var(--accent-primary);
+            border-color: var(--border-hover);
         }
 
         .alert.error {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border-color: #ef4444;
+            background: var(--error-muted);
+            color: var(--error);
+            border-color: rgba(239, 68, 68, 0.4);
         }
 
         .alert.show {
@@ -469,28 +573,1545 @@
 
         .footer {
             text-align: center;
-            padding: 40px 20px;
-            margin-top: 60px;
-            border-top: 1px solid #30363d;
-            color: #8b949e;
+            padding: 48px 20px;
+            margin-top: 80px;
+            border-top: 1px solid var(--border-primary);
+            color: var(--text-tertiary);
             font-size: 0.9em;
         }
 
-        @media (max-width: 768px) {
+        /* FILTROS */
+        .filters-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filters-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .filters-header h3 {
+            color: var(--text-primary);
+            font-size: 1.3em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.01em;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            color: var(--text-tertiary);
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            background: var(--bg-card);
+            border: 2px solid var(--border-hover);
+            color: var(--text-primary);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-hover);
+        }
+
+        .filter-group select {
+            cursor: pointer;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .filter-type-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-type-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .filter-type-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-type-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+        }
+
+        /* CARDS DE CAMPOS FALTANTES */
+        .missing-stats-section {
+            margin-bottom: 25px;
+        }
+
+        .missing-stats-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .missing-stats-header h3 {
+            color: var(--text-primary);
+            font-size: 1.3em;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .missing-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .missing-stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .missing-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--error);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .missing-stat-card:hover::before,
+        .missing-stat-card.active::before {
+            transform: scaleX(1);
+        }
+
+        .missing-stat-card:hover {
+            border-color: rgba(239, 68, 68, 0.4);
+            background: var(--bg-hover);
+            box-shadow: var(--shadow-md);
+        }
+
+        .missing-stat-card.active {
+            border-color: rgba(239, 68, 68, 0.4);
+            background: var(--bg-hover);
+        }
+
+        .missing-stat-card h4 {
+            color: var(--text-tertiary);
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+            font-weight: 700;
+        }
+
+        .missing-stat-number {
+            font-size: 2.2em;
+            font-weight: 800;
+            color: var(--error);
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .missing-stat-percent {
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* INDICADORES DE PROGRESSO */
+        .stat-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .progress-up {
+            color: var(--accent-primary);
+        }
+
+        .progress-down {
+            color: var(--error);
+        }
+
+        .progress-neutral {
+            color: #8b949e;
+        }
+
+        .progress-icon {
+            font-size: 1.1em;
+        }
+
+        /* HISTÓRICO COMPLETO */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .history-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.2s ease;
+            cursor: pointer !important;
+            user-select: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .history-item:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-hover);
+            box-shadow: var(--shadow-md);
+        }
+
+        .history-item.expanded {
+            border-color: var(--border-hover);
+            background: var(--bg-hover);
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .history-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .history-title h3 {
+            color: var(--text-primary);
+            font-size: 1.2em;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .history-date {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .history-stat {
+            background: var(--bg-secondary);
+            padding: 16px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .history-stat-label {
+            color: var(--text-tertiary);
+            font-size: 0.7em;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .history-stat-value {
+            color: var(--text-primary);
+            font-size: 1.5em;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .history-details {
+            display: none;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-primary);
+        }
+
+        .history-item.expanded .history-details {
+            display: block;
+        }
+
+        .expand-icon {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-secondary);
+            font-size: 1.3em;
+        }
+
+        .history-item.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 100px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-history-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* GRÁFICO E FILTROS */
+        .chart-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 36px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-primary);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .chart-header h2 {
+            color: var(--text-primary);
+            font-size: 1.6em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .chart-type-selector {
+            display: flex;
+            gap: 6px;
+            background: var(--bg-secondary);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .chart-type-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+        }
+
+        .chart-type-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .chart-type-btn.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-filter label {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            white-space: nowrap;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .date-filter input[type="date"] {
+            background: var(--bg-card);
+            border: 2px solid var(--border-hover);
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .date-filter input[type="date"]:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-hover);
+        }
+
+        .date-filter input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.8;
+            cursor: pointer;
+        }
+
+        .date-filter input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+
+        .chart-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-top: 28px;
+            padding-top: 28px;
+            border-top: 1px solid var(--border-primary);
+        }
+
+        .chart-stat-card {
+            background: var(--bg-secondary);
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .chart-stat-label {
+            color: var(--text-tertiary);
+            font-size: 0.7em;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .chart-stat-value {
+            color: var(--text-primary);
+            font-size: 2em;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .chart-stat-trend {
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trend-up {
+            color: var(--accent-primary);
+        }
+
+        .trend-down {
+            color: var(--error);
+        }
+
+        /* PAGINAÇÃO */
+        .pagination-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-primary);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .pagination-info {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-pagination {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+        }
+
+        .btn-pagination:hover:not(:disabled) {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-pagination:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-size-selector label {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .page-size-selector select {
+            background: var(--bg-card);
+            border: 2px solid var(--border-hover);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .page-size-selector select:hover {
+            border-color: var(--accent-primary);
+        }
+
+        /* RESPONSIVIDADE MOBILE-FIRST */
+        
+        /* Mobile Pequeno (até 480px) */
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .header {
+                margin-bottom: 32px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+                line-height: 1.2;
+            }
+
+            .header p {
+                font-size: 0.95em;
+            }
+
+            /* Tabs Mobile */
             .tabs {
                 overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding: 4px;
+                gap: 6px;
+                margin-bottom: 24px;
             }
+
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+
             .tab {
                 padding: 12px 20px;
+                font-size: 0.85em;
                 white-space: nowrap;
+                flex-shrink: 0;
             }
+
+            /* Upload Section */
+            .upload-section {
+                padding: 24px 20px;
+                border-radius: 16px;
+                margin-bottom: 24px;
+            }
+
+            .upload-area {
+                padding: 40px 20px;
+                border-radius: 16px;
+            }
+
+            .upload-icon {
+                font-size: 2.5em;
+            }
+
+            .upload-area h3 {
+                font-size: 1.1em;
+            }
+
+            .upload-area p {
+                font-size: 0.9em;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 16px 24px;
+                font-size: 0.95em;
+            }
+
+            /* Info Bar */
+            .info-bar {
+                padding: 20px;
+                border-radius: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .info-item {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            /* Stats Grid */
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 16px;
+                margin-bottom: 24px;
             }
+
+            .stat-card {
+                padding: 24px 20px;
+                border-radius: 16px;
+            }
+
+            .stat-number {
+                font-size: 2.8em;
+            }
+
+            .stat-percentage {
+                font-size: 1em;
+            }
+
+            /* Filtros */
+            .filters-section {
+                padding: 20px;
+                border-radius: 16px;
+                margin-bottom: 24px;
+            }
+
+            .filters-header {
+                margin-bottom: 20px;
+                padding-bottom: 16px;
+            }
+
+            .filters-header h3 {
+                font-size: 1.1em;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .filter-group input,
+            .filter-group select {
+                padding: 14px;
+                font-size: 16px; /* Previne zoom no iOS */
+                border-width: 2px;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .filter-actions button {
+                width: 100%;
+            }
+
+            /* Missing Stats */
+            .missing-stats-header h3 {
+                font-size: 1.1em;
+            }
+
+            .missing-stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .missing-stat-card {
+                padding: 18px 16px;
+                border-radius: 14px;
+            }
+
+            .missing-stat-number {
+                font-size: 1.8em;
+            }
+
+            /* Tables */
+            .table-section {
+                padding: 20px 16px;
+                border-radius: 16px;
+                margin-bottom: 20px;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 20px;
+                padding-bottom: 16px;
+            }
+
+            .table-header h2 {
+                font-size: 1.3em;
+            }
+
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                margin: 0 -16px;
+                padding: 0 16px;
+            }
+
             table {
-                font-size: 0.75em;
+                font-size: 0.8em;
                 min-width: 600px;
             }
+
+            th {
+                padding: 14px 12px;
+                font-size: 0.65em;
+            }
+
+            td {
+                padding: 14px 12px;
+                font-size: 0.85em;
+            }
+
+            .missing-field {
+                font-size: 0.75em;
+                padding: 5px 10px;
+            }
+
+            /* Algoritmos em mobile */
+            .algorithms-container {
+                gap: 4px;
+                margin-top: 6px;
+            }
+
+            .algorithm-item {
+                font-size: 0.7em;
+            }
+
+            .algorithm-label {
+                font-size: 0.8em;
+            }
+
+            .algorithm-tooltip {
+                position: fixed;
+                bottom: auto;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                min-width: 92vw;
+                max-width: 92vw;
+                font-size: 1.05em;
+                padding: 20px;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+
+            /* Paginação */
+            .pagination-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+                margin-top: 20px;
+                padding-top: 20px;
+            }
+
+            .pagination-info {
+                text-align: center;
+            }
+
+            .pagination-controls {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+
+            .page-size-selector {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .page-size-selector select {
+                flex: 1;
+                max-width: 120px;
+            }
+
+            .pagination-buttons {
+                width: 100%;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .btn-pagination {
+                flex: 1;
+                padding: 12px 16px;
+                font-size: 0.85em;
+            }
+
+            /* Histórico */
+            .history-item {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .history-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .history-title h3 {
+                font-size: 1.1em;
+            }
+
+            .history-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .history-stat {
+                padding: 14px;
+            }
+
+            .history-stat-value {
+                font-size: 1.3em;
+            }
+
+            /* Chart Section */
+            .chart-section {
+                padding: 20px;
+                border-radius: 16px;
+                margin-bottom: 24px;
+            }
+
+            .chart-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+            }
+
+            .chart-header h2 {
+                font-size: 1.3em;
+            }
+
+            .chart-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .chart-type-selector {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .date-filter {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .date-filter label {
+                font-size: 0.75em;
+            }
+
+            .date-filter input[type="date"] {
+                width: 100%;
+                padding: 12px;
+                font-size: 16px; /* Previne zoom no iOS */
+                border-width: 2px;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+
+            .chart-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .chart-stat-card {
+                padding: 16px;
+            }
+
+            .chart-stat-value {
+                font-size: 1.5em;
+            }
+
+            /* Footer */
+            .footer {
+                padding: 32px 20px;
+                margin-top: 60px;
+                font-size: 0.85em;
+            }
+
+            /* Alerts */
+            .alert {
+                padding: 16px 20px;
+                border-radius: 12px;
+                font-size: 0.9em;
+            }
+
+            /* No History */
+            .no-history {
+                padding: 60px 20px;
+            }
+
+            .no-history-icon {
+                font-size: 3.5em;
+            }
+        }
+
+        /* Mobile Médio (481px - 768px) */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .container {
+                padding: 32px 24px;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .missing-stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            }
+
+            .history-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .chart-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .table-container {
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        /* Tablets (769px - 1024px) */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 900px;
+                padding: 36px 28px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+
+            .filters-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Touch Improvements (todos os dispositivos) */
+        @media (hover: none) and (pointer: coarse) {
+            /* Aumentar áreas de toque */
+            .tab {
+                min-height: 44px;
+            }
+
+            .btn {
+                min-height: 48px;
+            }
+
+            .stat-card {
+                min-height: 120px;
+            }
+
+            .missing-stat-card {
+                min-height: 100px;
+            }
+
+            /* Ajustar touch feedback */
+            .btn:active,
+            .stat-card:active {
+                transform: scale(0.98);
+            }
+
+            /* Otimizações de scroll touch */
+            .table-container,
+            .tabs {
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+            }
+
+            /* Feedback tátil unificado */
+            .tab:active {
+                transform: scale(0.98);
+            }
+        }
+
+        /* Otimizações específicas iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+            /* Fix para scroll em iOS */
+            body {
+                position: relative;
+                width: 100%;
+            }
+
+            /* Prevenir bounce scroll indesejado */
+            .table-container {
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Fix para input zoom no iOS */
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="date"],
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Landscape mode em mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .header {
+                margin-bottom: 24px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+        }
+
+        /* BADGES DE QUALIDADE E PRIORIDADE */
+        .quality-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.75em;
+            font-weight: 700;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .quality-badge.high {
+            background: var(--accent-muted);
+            color: var(--accent-primary);
+            border: 1px solid rgba(16, 163, 127, 0.3);
+        }
+
+        .quality-badge.medium {
+            background: rgba(255, 193, 7, 0.12);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .quality-badge.low {
+            background: var(--error-muted);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.75em;
+            font-weight: 700;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .priority-badge.high {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .priority-badge.medium {
+            background: rgba(255, 193, 7, 0.12);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .priority-badge.low {
+            background: rgba(156, 163, 175, 0.12);
+            color: #9ca3af;
+            border: 1px solid rgba(156, 163, 175, 0.3);
+        }
+
+        .validation-icon {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 0.9em;
+        }
+
+        /* CONTAINER DE ALGORITMOS ABAIXO DO NOME - COMPACTO */
+        .algorithms-container {
+            display: inline-flex;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .algorithm-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75em;
+            position: relative;
+        }
+
+        .algorithm-label {
+            color: var(--text-tertiary);
+            font-weight: 700;
+            font-size: 0.88em;
+            letter-spacing: 0.02em;
+        }
+
+        /* Tooltip expandível - MAIOR E MAIS LEGÍVEL */
+        .algorithm-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: var(--bg-card);
+            border: 2px solid var(--border-hover);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 10px;
+            min-width: 320px;
+            max-width: 420px;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            font-size: 1em;
+            line-height: 1.8;
+        }
+
+        .algorithm-item:hover .algorithm-tooltip {
+            display: block;
+        }
+
+        .algorithm-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 20px;
+            border: 6px solid transparent;
+            border-top-color: var(--border-hover);
+        }
+
+        /* Badge com hover elegante */
+        .quality-badge,
+        .priority-badge {
+            cursor: help;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quality-badge:hover,
+        .priority-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .validation-icon {
+            cursor: help;
+            transition: transform 0.2s ease;
+        }
+
+        .validation-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* Ajustes nos badges para melhor visualização */
+        .quality-badge,
+        .priority-badge {
+            margin-left: 0;
+        }
+
+        .validation-icon {
+            font-size: 1.1em;
+            margin-left: 0;
+        }
+
+        /* SEÇÃO DE AJUDA */
+        .help-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* Seção de ajuda dentro de um card pai (sem borda/margin externa) */
+        .help-section.inside-card {
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+
+        .help-section:hover {
+            border-color: var(--border-hover);
+        }
+
+        .help-section.inside-card:hover {
+            border-color: transparent;
+        }
+
+        .help-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+        }
+
+        .help-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .help-toggle {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .help-section.expanded .help-toggle {
+            transform: rotate(180deg);
+        }
+
+        .help-content {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-primary);
+        }
+
+        .help-section.inside-card .help-content {
+            border-top: 1px solid var(--border-primary);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .help-section.expanded .help-content {
+            display: block;
+        }
+
+        .help-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+        }
+
+        .help-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .help-icon {
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .help-text h4 {
+            color: var(--text-primary);
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .help-text p {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+
+        /* CORREÇÃO: Garantir que tooltips fiquem por cima de tudo */
+        .algorithm-tooltip {
+            z-index: 9999 !important;
+            position: absolute !important;
+        }
+
+        /* Tooltip centralizado na tela acima de tudo (tamanho ampliado agressivamente) */
+        .algorithm-tooltip {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 9999 !important;
+            background: var(--bg-card, #222);
+            border: 2px solid var(--border-hover, #10a37f);
+            padding: 40px !important;
+            border-radius: 18px !important;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.7);
+            min-width: 650px;
+            max-width: 99vw;
+            max-height: 98vh;
+            overflow: auto;
+            font-size: 1.25em !important;
+            word-break: break-word;
+            white-space: pre-line;
+        }
+
+        /* Tooltip centralizada: largura e altura iguais, rolagem se exceder */
+        .algorithm-tooltip {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 9999 !important;
+            width: 420px !important;
+            height: 420px !important;
+            background: var(--bg-card, #222);
+            border: 2px solid var(--border-hover, #10a37f);
+            padding: 32px !important;
+            border-radius: 16px !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            overflow: auto !important;
+            font-size: 1.12em;
+            word-break: break-word;
+            white-space: pre-line;
+        }
+
+        /* Tooltip centralizada: tamanho menor, sem rolagem, ajustando altura automaticamente */
+        .algorithm-tooltip {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 9999 !important;
+            width: 320px !important;
+            height: auto !important;
+            max-width: 90vw !important;
+            max-height: 70vh !important;
+            overflow: visible !important;
+            background: var(--bg-card, #222);
+            border: 2px solid var(--border-hover, #10a37f);
+            padding: 28px !important;
+            border-radius: 14px !important;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+            font-size: 1.08em;
+            word-break: break-word;
+            white-space: pre-line;
+        }
+
+        /* Tooltip centralizada, tamanho igual largura/altura, visual limpo e centralizado */
+        .algorithm-tooltip {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 9999 !important;
+            width: 340px !important;
+            height: 340px !important;
+            background: var(--bg-card, #222);
+            border: 2px solid var(--border-hover, #10a37f);
+            padding: 24px !important;
+            border-radius: 14px !important;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+            font-size: 1.08em;
+            word-break: break-word;
+            white-space: pre-line;
+            overflow: hidden !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Tooltip estilizado clássico, aparece apenas no hover e próximo ao badge */
+        .algorithm-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            width: 320px;
+            background: var(--bg-card, #222);
+            border: 2px solid var(--border-hover, #10a37f);
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.70);
+            font-size: 1.06em;
+            word-break: break-word;
+            white-space: pre-line;
+            z-index: 9999;
+            color: var(--text-primary, #fff);
+        }
+        .algorithm-item:hover .algorithm-tooltip {
+            display: block;
+        }
+
+        /* Tooltip estilizado: largura automática proporcional ao conteúdo */
+        .algorithm-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            width: auto;
+            min-width: 180px;
+            max-width: 340px;
+            background: var(--bg-card, #222);
+            border: 2px solid var(--border-hover, #10a37f);
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.70);
+            font-size: 1.04em;
+            word-break: break-word;
+            white-space: pre-line;
+            z-index: 9999;
+            color: var(--text-primary, #fff);
+            text-align: left;
         }
     </style>
 </head>
@@ -502,38 +2123,19 @@
         </div>
 
         <div class="tabs">
-            <button class="tab active" data-tab="upload">📤 Novo Upload</button>
-            <button class="tab" data-tab="historico">📜 Último Processamento</button>
+            <button class="tab active" data-tab="dashboard">📈 Dashboard</button>
+            <button class="tab" data-tab="historico">📋 Cadastros</button>
+            <button class="tab" data-tab="historico-completo">📚 Histórico de Atualizações</button>
         </div>
 
-        <!-- ABA UPLOAD -->
-        <div class="tab-content active" data-content="upload">
-            <div class="upload-section" id="uploadSection">
-                <div class="alert" id="alertUpload"></div>
-                
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">📁</div>
-                    <h3>Arraste seu arquivo CSV aqui</h3>
-                    <p>ou clique no botão abaixo</p>
-                    <button class="btn" id="selectFileBtn">Escolher Arquivo</button>
-                    <input type="file" id="fileInput" accept=".csv">
-                    <div class="file-name" id="fileName"></div>
-                </div>
-
-                <div class="loading" id="loadingUpload">
-                    <div class="spinner"></div>
-                    <p>Processando e salvando no banco...</p>
-                </div>
-
-                <div style="text-align: center; margin-top: 25px;">
-                    <button class="btn" id="uploadBtn" disabled>
-                        <span>📤</span>
-                        <span>Enviar e Salvar</span>
-                    </button>
-                </div>
+        <!-- ABA DASHBOARD -->
+        <div class="tab-content active" data-content="dashboard">
+            <div class="alert" id="alertDashboard"></div>
+            <div class="loading" id="loadingDashboard">
+                <div class="spinner"></div>
+                <p>Carregando dashboard...</p>
             </div>
-
-            <div class="results" id="resultsUpload"></div>
+            <div class="results" id="resultsDashboard"></div>
         </div>
 
         <!-- ABA HISTÓRICO -->
@@ -546,6 +2148,16 @@
             <div class="results" id="resultsHistorico"></div>
         </div>
 
+        <!-- ABA HISTÓRICO COMPLETO -->
+        <div class="tab-content" data-content="historico-completo">
+            <div class="alert" id="alertHistoricoCompleto"></div>
+            <div class="loading" id="loadingHistoricoCompleto">
+                <div class="spinner"></div>
+                <p>Carregando histórico completo...</p>
+            </div>
+            <div id="historicoCompletoContainer"></div>
+        </div>
+
         <footer class="footer">
             <p>© <span id="currentYear"></span> Espaço Bem Estar Chinara Gomes | Desenvolvido por Artur Neto</p>
         </footer>
@@ -554,10 +2166,635 @@
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
+        // FUNÇÃO UTILITÁRIA PARA FORMATAR DATAS NO TIMEZONE DE SÃO PAULO
+        function formatDateBR(dateString, includeTime = true) {
+            if (!dateString) return 'Data não disponível';
+            
+            const date = new Date(dateString);
+            
+            // Configuração para timezone de São Paulo
+            const options = {
+                timeZone: 'America/Sao_Paulo',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            };
+            
+            if (includeTime) {
+                options.hour = '2-digit';
+                options.minute = '2-digit';
+                options.second = '2-digit';
+                options.hour12 = false;
+            }
+            
+            return date.toLocaleString('pt-BR', options);
+        }
+
+        function formatDateShortBR(dateString) {
+            if (!dateString) return '';
+            
+            const date = new Date(dateString);
+            
+            return date.toLocaleDateString('pt-BR', {
+                timeZone: 'America/Sao_Paulo',
+                day: '2-digit',
+                month: '2-digit',
+                year: '2-digit'
+            });
+        }
+
+        // ============================================
+        // ALGORITMOS INTELIGENTES
+        // ============================================
+
+        // 1. SCORE DE QUALIDADE (0-100)
+        function calculateQualityScore(cadastro) {
+            const dados = cadastro.dados || {};
+            let score = 0;
+            
+            const weights = {
+                nome: 20,
+                email: 25,
+                telefone: 20,
+                dataNascimento: 15,
+                genero: 10,
+                cep: 10
+            };
+
+            const getValue = (keys) => {
+                for (let k of keys) {
+                    if (dados[k] && String(dados[k]).trim() !== '') return String(dados[k]);
+                }
+                return null;
+            };
+
+            const nome = getValue(['Nome', 'nome']);
+            if (nome && nome.length >= 3) score += weights.nome;
+
+            const email = getValue(['E-mail', 'Email', 'email']);
+            if (email && isValidEmail(email)) score += weights.email;
+            else if (email) score += weights.email * 0.5;
+
+            const telefone = getValue(['Telefone 1', 'Telefone', 'telefone']);
+            if (telefone && isValidPhone(telefone)) score += weights.telefone;
+            else if (telefone) score += weights.telefone * 0.5;
+
+            const dataNascimento = getValue(['Data de Nascimento', 'Data Nascimento']);
+            if (dataNascimento && dataNascimento !== '-') score += weights.dataNascimento;
+
+            const genero = getValue(['Gênero', 'Genero', 'genero']);
+            if (genero && genero !== '-') score += weights.genero;
+
+            const cep = getValue(['CEP', 'cep']);
+            if (cep && isValidCEP(cep)) score += weights.cep;
+            else if (cep) score += weights.cep * 0.5;
+
+            return Math.round(score);
+        }
+
+        // 2. VALIDAÇÃO INTELIGENTE
+        function isValidEmail(email) {
+            if (!email) return false;
+            
+            // Regex mais rigoroso:
+            // - Nome: letras, números, ., _, -, +
+            // - @ obrigatório
+            // - Domínio: letras, números, - (min 2 caracteres)
+            // - Ponto obrigatório
+            // - TLD: 2-6 letras (rejeita .comm, .a, etc)
+            const regex = /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,6}$/;
+            
+            // Validações adicionais
+            const emailLower = String(email).toLowerCase().trim();
+            
+            // Rejeitar domínios muito curtos
+            const domain = emailLower.split('@')[1];
+            if (!domain || domain.length < 4) return false;
+            
+            // Rejeitar TLDs inválidos comuns
+            const invalidTLDs = ['.comm', '.nett', '.orgg', '.brr', '.con', '.coom'];
+            if (invalidTLDs.some(tld => emailLower.endsWith(tld))) return false;
+            
+            return regex.test(emailLower);
+        }
+
+        function isValidPhone(phone) {
+            if (!phone) return false;
+            const clean = String(phone).replace(/\D/g, '');
+            return clean.length >= 10 && clean.length <= 11;
+        }
+
+        function isValidCEP(cep) {
+            if (!cep) return false;
+            const clean = String(cep).replace(/\D/g, '');
+            return clean.length === 8;
+        }
+
+        function formatPhoneNumber(phone) {
+            if (!phone) return phone;
+            const clean = String(phone).replace(/\D/g, '');
+            
+            if (clean.length === 11) {
+                return `(${clean.slice(0,2)}) ${clean.slice(2,7)}-${clean.slice(7)}`;
+            } else if (clean.length === 10) {
+                return `(${clean.slice(0,2)}) ${clean.slice(2,6)}-${clean.slice(6)}`;
+            }
+            
+            return phone;
+        }
+
+        function formatCEP(cep) {
+            if (!cep) return cep;
+            const clean = String(cep).replace(/\D/g, '');
+            
+            if (clean.length === 8) {
+                return `${clean.slice(0,5)}-${clean.slice(5)}`;
+            }
+            
+            return cep;
+        }
+
+        // 3. PRIORIZAÇÃO INTELIGENTE
+        function calculatePriority(cadastro) {
+            const dados = cadastro.dados || {};
+            let priority = 0;
+            
+            const getValue = (keys) => {
+                for (let k of keys) {
+                    if (dados[k]) return String(dados[k]);
+                }
+                return null;
+            };
+
+            const email = getValue(['E-mail', 'Email', 'email']);
+            if (!email || email === '-') priority += 30;
+            else if (!isValidEmail(email)) priority += 15;
+
+            const telefone = getValue(['Telefone 1', 'Telefone', 'telefone']);
+            if (!telefone || telefone === '-') priority += 25;
+            else if (!isValidPhone(telefone)) priority += 12;
+
+            const dataNascimento = getValue(['Data de Nascimento', 'Data Nascimento']);
+            if (!dataNascimento || dataNascimento === '-') priority += 20;
+
+            const cep = getValue(['CEP', 'cep']);
+            if (!cep || cep === '-') priority += 15;
+
+            const nome = getValue(['Nome', 'nome']);
+            if (!nome || nome === '-' || nome.length < 3) priority += 10;
+
+            return priority;
+        }
+
+        function getQualityBadge(score) {
+            if (score >= 80) {
+                return '<span class="quality-badge high" title="Score de Qualidade: ' + score + '/100 - Dados completos e válidos">🟢 ' + score + '</span>';
+            } else if (score >= 50) {
+                return '<span class="quality-badge medium" title="Score de Qualidade: ' + score + '/100 - Alguns dados precisam melhorias">🟡 ' + score + '</span>';
+            } else {
+                return '<span class="quality-badge low" title="Score de Qualidade: ' + score + '/100 - Muitos dados faltando ou inválidos">🔴 ' + score + '</span>';
+            }
+        }
+
+        function getPriorityBadge(priority) {
+            // DEBUG: Mostrar o valor numérico da prioridade
+            if (priority >= 50) {
+                return '<span class="priority-badge high" title="Prioridade Alta: ' + priority + ' pontos - Cadastro crítico">🔥 Alta (' + priority + ')</span>';
+            } else if (priority >= 25) {
+                return '<span class="priority-badge medium" title="Prioridade Média: ' + priority + ' pontos - Precisa correções">⚡ Média (' + priority + ')</span>';
+            } else {
+                return '<span class="priority-badge low" title="Prioridade Baixa: ' + priority + ' pontos - Poucas pendências">⏸️ Baixa (' + priority + ')</span>';
+            }
+        }
+
+        function getValidationIcon(cadastro) {
+            const dados = cadastro.dados || {};
+            const getValue = (keys) => {
+                for (let k of keys) if (dados[k]) return String(dados[k]);
+                return null;
+            };
+
+            const email = getValue(['E-mail', 'Email', 'email']);
+            const telefone = getValue(['Telefone 1', 'Telefone', 'telefone']);
+            const cep = getValue(['CEP', 'cep']);
+
+            let validCount = 0;
+            let totalCount = 0;
+
+            if (email) {
+                totalCount++;
+                if (isValidEmail(email)) validCount++;
+            }
+            if (telefone) {
+                totalCount++;
+                if (isValidPhone(telefone)) validCount++;
+            }
+            if (cep) {
+                totalCount++;
+                if (isValidCEP(cep)) validCount++;
+            }
+
+            if (totalCount === 0) return '';
+            if (validCount === totalCount) return '<span class="validation-icon" title="Todos os dados válidos">✅</span>';
+            if (validCount > 0) return '<span class="validation-icon" title="Alguns dados precisam de revisão">⚠️</span>';
+            return '<span class="validation-icon" title="Dados precisam de validação">❌</span>';
+        }
+
+        // VALIDAÇÃO DETALHADA COM EXPLICAÇÕES ESPECÍFICAS
+        function getDetailedValidation(cadastro) {
+            const dados = cadastro.dados || {};
+            const getValue = (keys) => {
+                for (let k of keys) if (dados[k]) return String(dados[k]);
+                return null;
+            };
+
+            const email = getValue(['E-mail', 'Email', 'email']);
+            const telefone = getValue(['Telefone 1', 'Telefone', 'telefone']);
+            const cep = getValue(['CEP', 'cep']);
+
+            let validations = [];
+
+            // Validação de Email
+            if (email && email !== '-') {
+                if (isValidEmail(email)) {
+                    validations.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ E-mail válido</span>`);
+                } else {
+                    validations.push(`<span style="color: var(--error); font-size: 0.95em;">❌ E-mail inválido (${email.length > 30 ? email.substring(0, 27) + '...' : email})</span>`);
+                }
+            } else {
+                validations.push(`<span style="color: var(--text-tertiary); font-size: 0.95em;">⚪ E-mail ausente</span>`);
+            }
+
+            // Validação de Telefone
+            if (telefone && telefone !== '-') {
+                if (isValidPhone(telefone)) {
+                    validations.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ Telefone válido</span>`);
+                } else {
+                    validations.push(`<span style="color: var(--error); font-size: 0.95em;">❌ Telefone inválido (formato incorreto)</span>`);
+                }
+            } else {
+                validations.push(`<span style="color: var(--text-tertiary); font-size: 0.95em;">⚪ Telefone ausente</span>`);
+            }
+
+            // Validação de CEP
+            if (cep && cep !== '-') {
+                if (isValidCEP(cep)) {
+                    validations.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ CEP válido</span>`);
+                } else {
+                    validations.push(`<span style="color: var(--error); font-size: 0.95em;">❌ CEP inválido (deve ter 8 dígitos)</span>`);
+                }
+            } else {
+                validations.push(`<span style="color: var(--text-tertiary); font-size: 0.95em;">⚪ CEP ausente</span>`);
+            }
+
+            return validations.join('<br>');
+        }
+
+        // DETALHAMENTO DO SCORE DE QUALIDADE
+        function getQualityBreakdown(cadastro) {
+            const dados = cadastro.dados || {};
+            const getValue = (keys) => {
+                for (let k of keys) {
+                    if (dados[k] && String(dados[k]).trim() !== '') return String(dados[k]);
+                }
+                return null;
+            };
+
+            let breakdown = [];
+            let totalScore = 0;
+
+            // Nome (20 pontos)
+            const nome = getValue(['Nome', 'nome']);
+            if (nome && nome.length >= 3) {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ Nome completo (+20)</span>`);
+                totalScore += 20;
+            } else {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">❌ Nome faltando ou incompleto (+0)</span>`);
+            }
+
+            // Email (25 pontos)
+            const email = getValue(['E-mail', 'Email', 'email']);
+            if (email && isValidEmail(email)) {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ E-mail válido (+25)</span>`);
+                totalScore += 25;
+            } else if (email) {
+                breakdown.push(`<span style="color: #ffc107; font-size: 0.95em;">⚠️ E-mail inválido (+12.5)</span>`);
+                totalScore += 12.5;
+            } else {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">❌ E-mail ausente (+0)</span>`);
+            }
+
+            // Telefone (20 pontos)
+            const telefone = getValue(['Telefone 1', 'Telefone', 'telefone']);
+            if (telefone && isValidPhone(telefone)) {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ Telefone válido (+20)</span>`);
+                totalScore += 20;
+            } else if (telefone) {
+                breakdown.push(`<span style="color: #ffc107; font-size: 0.95em;">⚠️ Telefone inválido (+10)</span>`);
+                totalScore += 10;
+            } else {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">❌ Telefone ausente (+0)</span>`);
+            }
+
+            // Data Nascimento (15 pontos)
+            const dataNascimento = getValue(['Data de Nascimento', 'Data Nascimento']);
+            if (dataNascimento && dataNascimento !== '-') {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ Data de Nascimento (+15)</span>`);
+                totalScore += 15;
+            } else {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">❌ Data de Nascimento ausente (+0)</span>`);
+            }
+
+            // Gênero (10 pontos)
+            const genero = getValue(['Gênero', 'Genero', 'genero']);
+            if (genero && genero !== '-') {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ Gênero (+10)</span>`);
+                totalScore += 10;
+            } else {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">❌ Gênero ausente (+0)</span>`);
+            }
+
+            // CEP (10 pontos)
+            const cep = getValue(['CEP', 'cep']);
+            if (cep && isValidCEP(cep)) {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ CEP válido (+10)</span>`);
+                totalScore += 10;
+            } else if (cep) {
+                breakdown.push(`<span style="color: #ffc107; font-size: 0.95em;">⚠️ CEP inválido (+5)</span>`);
+                totalScore += 5;
+            } else {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">❌ CEP ausente (+0)</span>`);
+            }
+
+            return breakdown.join('<br>') + `<br><br><strong style="color: var(--text-primary); font-size: 1.05em; display: block; padding-top: 8px; border-top: 1px solid var(--border-primary);">Total: ${Math.round(totalScore)}/100</strong>`;
+        }
+
+        // DETALHAMENTO DA PRIORIDADE
+        function getPriorityBreakdown(cadastro) {
+            const dados = cadastro.dados || {};
+            const getValue = (keys) => {
+                for (let k of keys) {
+                    if (dados[k]) return String(dados[k]);
+                }
+                return null;
+            };
+
+            let breakdown = [];
+            let totalPriority = 0;
+
+            const email = getValue(['E-mail', 'Email', 'email']);
+            if (!email || email === '-') {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">🔥 E-mail FALTANDO (+30 urgência)</span>`);
+                totalPriority += 30;
+            } else if (!isValidEmail(email)) {
+                breakdown.push(`<span style="color: #ffc107; font-size: 0.95em;">⚠️ E-mail INVÁLIDO (+15 urgência)</span>`);
+                totalPriority += 15;
+            } else {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ E-mail OK (+0)</span>`);
+            }
+
+            const telefone = getValue(['Telefone 1', 'Telefone', 'telefone']);
+            if (!telefone || telefone === '-') {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">🔥 Telefone FALTANDO (+25 urgência)</span>`);
+                totalPriority += 25;
+            } else if (!isValidPhone(telefone)) {
+                breakdown.push(`<span style="color: #ffc107; font-size: 0.95em;">⚠️ Telefone INVÁLIDO (+12 urgência)</span>`);
+                totalPriority += 12;
+            } else {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ Telefone OK (+0)</span>`);
+            }
+
+            const dataNascimento = getValue(['Data de Nascimento', 'Data Nascimento']);
+            if (!dataNascimento || dataNascimento === '-') {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">🔥 Data Nascimento FALTANDO (+20 urgência)</span>`);
+                totalPriority += 20;
+            } else {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ Data Nascimento OK (+0)</span>`);
+            }
+
+            const cep = getValue(['CEP', 'cep']);
+            if (!cep || cep === '-') {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">🔥 CEP FALTANDO (+15 urgência)</span>`);
+                totalPriority += 15;
+            } else {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ CEP OK (+0)</span>`);
+            }
+
+            const nome = getValue(['Nome', 'nome']);
+            if (!nome || nome === '-' || nome.length < 3) {
+                breakdown.push(`<span style="color: var(--error); font-size: 0.95em;">🔥 Nome incompleto (+10 urgência)</span>`);
+                totalPriority += 10;
+            } else {
+                breakdown.push(`<span style="color: var(--accent-primary); font-size: 0.95em;">✅ Nome OK (+0)</span>`);
+            }
+
+            let nivel = '⏸️ Baixa';
+            if (totalPriority >= 50) nivel = '🔥 Alta';
+            else if (totalPriority >= 25) nivel = '⚡ Média';
+
+            return breakdown.join('<br>') + `<br><br><strong style="color: var(--text-primary); font-size: 1.05em; display: block; padding-top: 8px; border-top: 1px solid var(--border-primary);">Nível: ${nivel} (${totalPriority} pontos)</strong>`;
+        }
+
+        function renderHelpSection() {
+            return `
+                <div class="help-section inside-card upload-help-section" onclick="toggleUploadHelp(event)" style="margin-top: 24px;">
+                    <div class="help-header">
+                        <div class="help-title">
+                            <span>💡</span>
+                            <span>Como Funciona o Sistema de Análise Inteligente?</span>
+                        </div>
+                        <span class="help-toggle">▼</span>
+                    </div>
+                    <div class="help-content">
+                        <div class="help-item">
+                            <div class="help-icon">🎯</div>
+                            <div class="help-text">
+                                <h4>Score de Qualidade (0-100)</h4>
+                                <p>Cada cadastro recebe uma pontuação baseada na completude e validade dos dados:</p>
+                                <p><strong>🟢 80-100:</strong> Alta qualidade - Dados completos e válidos</p>
+                                <p><strong>🟡 50-79:</strong> Média qualidade - Alguns dados precisam melhorias</p>
+                                <p><strong>🔴 0-49:</strong> Baixa qualidade - Muitos dados faltando ou inválidos</p>
+                            </div>
+                        </div>
+                        <div class="help-item">
+                            <div class="help-icon">✅</div>
+                            <div class="help-text">
+                                <h4>Validação de Dados</h4>
+                                <p>O sistema valida automaticamente a formatação de emails, telefones e CEPs:</p>
+                                <p><strong>✅</strong> Todos os dados estão válidos e bem formatados</p>
+                                <p><strong>⚠️</strong> Alguns dados precisam de revisão ou correção</p>
+                                <p><strong>❌</strong> Dados inválidos ou mal formatados</p>
+                            </div>
+                        </div>
+                        <div class="help-item">
+                            <div class="help-icon">🔥</div>
+                            <div class="help-text">
+                                <h4>Priorização Inteligente</h4>
+                                <p>Cadastros incompletos são priorizados automaticamente por urgência:</p>
+                                <p><strong>🔥 Alta:</strong> Cadastro crítico - Faltam dados essenciais (email, telefone)</p>
+                                <p><strong>⚡ Média:</strong> Cadastro precisa de atenção - Alguns campos faltantes</p>
+                                <p><strong>⏸️ Baixa:</strong> Cadastro com poucas pendências</p>
+                            </div>
+                        </div>
+                        <div class="help-item">
+                            <div class="help-icon">🔄</div>
+                            <div class="help-text">
+                                <h4>Ordenação Automática</h4>
+                                <p><strong>Cadastros Completos:</strong> Ordenados do melhor para o pior score de qualidade</p>
+                                <p><strong>Cadastros Incompletos:</strong> Ordenados por prioridade (mais urgentes primeiro)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleHelp(event) {
+            // Encontrar a seção de ajuda clicada especificamente
+            const helpSection = event ? event.target.closest('.help-section') : document.querySelector('.help-section:not(.upload-help-section)');
+            if (helpSection) {
+                helpSection.classList.toggle('expanded');
+            }
+        }
+
+        function toggleUploadHelp(event) {
+            // Encontrar a seção de ajuda de upload especificamente
+            const uploadHelpSection = event ? event.target.closest('.upload-help-section') : document.querySelector('.upload-help-section');
+            if (uploadHelpSection) {
+                uploadHelpSection.classList.toggle('expanded');
+            }
+        }
+
+        function renderQualityStats(data) {
+            const allCadastros = [...(data.cadastros_completos || []), ...(data.cadastros_incompletos || [])];
+            if (allCadastros.length === 0) return '';
+
+            let high = 0, medium = 0, low = 0;
+            let totalScore = 0;
+
+            allCadastros.forEach(c => {
+                const score = calculateQualityScore(c);
+                totalScore += score;
+                if (score >= 80) high++;
+                else if (score >= 50) medium++;
+                else low++;
+            });
+
+            const avgScore = Math.round(totalScore / allCadastros.length);
+
+            return `
+                <div style="background: var(--bg-card); border: 1px solid var(--border-primary); border-radius: 20px; padding: 28px; margin-bottom: 32px; box-shadow: var(--shadow-sm);">
+                    <h2 style="color: var(--text-primary); font-size: 1.5em; font-weight: 700; margin-bottom: 24px;">🧠 Sistema de Inteligência com 4 Algoritmos Ativos</h2>
+                    
+                    <div class="info-bar" style="margin-bottom: 24px;">
+                        <div class="info-item" style="flex: 1;">
+                            <div style="font-size: 0.85em; color: var(--text-secondary); line-height: 1.5;">
+                                <strong>1.</strong> Score de Qualidade (0-100) • 
+                                <strong>2.</strong> Validação de Dados (✅⚠️❌) • 
+                                <strong>3.</strong> Priorização (🔥⚡⏸️) • 
+                                <strong>4.</strong> Ordenação Automática (🔄)
+                                <br>
+                                <span style="color: var(--text-tertiary); font-size: 0.95em;">Passe o mouse sobre os badges para ver detalhes</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${renderHelpSection()}
+                </div>
+            `;
+        }
+
+        function renderQualityStatsCard(data) {
+            const allCadastros = [...(data.cadastros_completos || []), ...(data.cadastros_incompletos || [])];
+            if (allCadastros.length === 0) return '';
+
+            let high = 0, medium = 0, low = 0;
+            let totalScore = 0;
+
+            allCadastros.forEach(c => {
+                const score = calculateQualityScore(c);
+                totalScore += score;
+                if (score >= 80) high++;
+                else if (score >= 50) medium++;
+                else low++;
+            });
+
+            const avgScore = Math.round(totalScore / allCadastros.length);
+
+            return `
+                <div class="missing-stats-section" style="margin-top: 32px;">
+                    <div class="missing-stats-header">
+                        <h3>🎯 Qualidade Geral dos Cadastros</h3>
+                    </div>
+                    <div class="missing-stats-grid">
+                        <div class="missing-stat-card" style="cursor: default; border-color: rgba(16, 163, 127, 0.3);">
+                            <h4>Média Geral</h4>
+                            <div class="missing-stat-number" style="color: var(--accent-primary);">${avgScore}</div>
+                            <div class="missing-stat-percent">Score 0-100</div>
+                        </div>
+                        <div class="missing-stat-card" style="cursor: default; border-color: rgba(16, 163, 127, 0.3);">
+                            <h4>🟢 Alta Qualidade</h4>
+                            <div class="missing-stat-number" style="color: var(--accent-primary);">${high}</div>
+                            <div class="missing-stat-percent">${((high/allCadastros.length)*100).toFixed(1)}%</div>
+                        </div>
+                        <div class="missing-stat-card" style="cursor: default; border-color: rgba(255, 193, 7, 0.3);">
+                            <h4>🟡 Média Qualidade</h4>
+                            <div class="missing-stat-number" style="color: #ffc107;">${medium}</div>
+                            <div class="missing-stat-percent">${((medium/allCadastros.length)*100).toFixed(1)}%</div>
+                        </div>
+                        <div class="missing-stat-card" style="cursor: default; border-color: rgba(239, 68, 68, 0.3);">
+                            <h4>🔴 Baixa Qualidade</h4>
+                            <div class="missing-stat-number" style="color: var(--error);">${low}</div>
+                            <div class="missing-stat-percent">${((low/allCadastros.length)*100).toFixed(1)}%</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         const WEBHOOK_UPLOAD = 'https://n8n-webhook.chinaragomes.com/webhook/ece3d5b1-476b-4475-9aaf-0791daa2792f';
-        const WEBHOOK_GET = 'https://n8n-webhook.chinaragomes.com/webhook/get-triagem-data';
+        const WEBHOOK_GET = 'https://n8n-webhook.chinaragomes.com/webhook/get-ultimo-processamento';
+        const WEBHOOK_GET_ALL = 'https://n8n-webhook.chinaragomes.com/webhook/get-all-triagem-data';
 
         let selectedFile = null;
+
+        // VARIÁVEIS PARA FILTROS E PAGINAÇÃO
+        let currentData = {
+            upload: null,
+            historico: null
+        };
+
+        let allHistoryData = [];
+        let filteredHistoryData = [];
+        let chartInstance = null;
+        let currentChartType = 'line';
+        
+        let dateFilter = {
+            start: null,
+            end: null
+        };
+
+        let filters = {
+            upload: { nome: '', telefone: '', email: '', campoFaltante: '' },
+            historico: { nome: '', telefone: '', email: '', campoFaltante: '' }
+        };
+
+        // Controla qual tipo de cadastro está sendo exibido (total/complete/incomplete)
+        let activeFilterType = {
+            upload: 'total',
+            historico: 'total'
+        };
+
+        let pagination = {
+            upload: {
+                complete: { currentPage: 1, pageSize: 10 },
+                incomplete: { currentPage: 1, pageSize: 10 }
+            },
+            historico: {
+                complete: { currentPage: 1, pageSize: 10 },
+                incomplete: { currentPage: 1, pageSize: 10 }
+            }
+        };
 
         // NAVEGAÇÃO ENTRE ABAS
         document.querySelectorAll('.tab').forEach(tab => {
@@ -568,11 +2805,330 @@
                 tab.classList.add('active');
                 document.querySelector(`[data-content="${tabName}"]`).classList.add('active');
                 
-                if (tabName === 'historico') {
+                // Salvar aba ativa no localStorage
+                localStorage.setItem('activeTab', tabName);
+                
+                if (tabName === 'dashboard') {
+                    loadDashboard();
+                } else if (tabName === 'historico') {
                     loadHistorico();
+                } else if (tabName === 'historico-completo') {
+                    loadHistoricoCompleto();
                 }
             });
         });
+
+        // CARREGAR DASHBOARD
+        async function loadDashboard() {
+            const loadingEl = document.getElementById('loadingDashboard');
+            const resultsEl = document.getElementById('resultsDashboard');
+            
+            // Destruir gráfico anterior
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+            
+            if (loadingEl) loadingEl.style.display = 'block';
+            if (resultsEl) {
+                resultsEl.style.display = 'none';
+                resultsEl.innerHTML = '';
+            }
+            hideAlert('Dashboard');
+
+            try {
+                // Tentar carregar todos os históricos
+                const res = await fetch(WEBHOOK_GET_ALL);
+                if (!res.ok) throw new Error(`Webhook não configurado (HTTP ${res.status})`);
+                
+                const data = await res.json();
+                allHistoryData = Array.isArray(data) ? data : [data];
+                
+                if (allHistoryData.length === 0) {
+                    if (resultsEl) {
+                        resultsEl.innerHTML = `
+                            <div style="background: var(--bg-card); border: 1px solid var(--border-primary); border-radius: 20px; padding: 28px; margin-bottom: 32px; box-shadow: var(--shadow-sm);">
+                                <h2 style="color: var(--text-primary); font-size: 1.5em; font-weight: 700; margin-bottom: 24px;">🔄 Última Atualização</h2>
+                                
+                                <div class="info-bar" style="margin-bottom: 24px;">
+                                    <div class="info-item">
+                                        <span class="info-label">📁 Arquivo:</span>
+                                        <span class="info-value">N/A</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">📅 Data:</span>
+                                        <span class="info-value">N/A</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <button class="btn" id="singleUploadBtnDashboard">Enviar CSV</button>
+                                        <input type="file" id="fileInputDashboard" accept=".csv" style="display:none;">
+                                    </div>
+                                </div>
+                                
+                                <div class="help-section inside-card upload-help-section" onclick="toggleUploadHelp(event)" style="margin-top: 24px;">
+                                    <div class="help-header">
+                                        <div class="help-title">
+                                            <span>ℹ️</span>
+                                            <span>Instruções para Atualização</span>
+                                        </div>
+                                        <span class="help-toggle">▼</span>
+                                    </div>
+                                    <div class="help-content">
+                                        <p style="color: var(--text-secondary); font-size: 0.95em; line-height: 1.6; margin-bottom: 16px;">
+                                            Para manter o banco de dados sempre atualizado, envie ao final de cada expediente a lista de clientes exportada da Trinks.
+                                        </p>
+                                        <div style="background: var(--bg-secondary); border-left: 3px solid var(--accent-primary); padding: 14px; border-radius: 8px; margin-bottom: 16px;">
+                                            <p style="color: var(--text-primary); font-size: 0.9em; font-weight: 600; margin-bottom: 10px;">Certifique-se de:</p>
+                                            <ul style="color: var(--text-secondary); font-size: 0.9em; line-height: 1.8; padding-left: 20px; margin: 0;">
+                                                <li>Baixar a lista completa no formato CSV diretamente do sistema Trinks;</li>
+                                                <li>Importar o arquivo clicando no botão <strong style="color: var(--accent-primary);">"Enviar CSV"</strong> disponível no painel do sistema.</li>
+                                            </ul>
+                                        </div>
+                                        <p style="color: var(--text-secondary); font-size: 0.9em; line-height: 1.6; font-style: italic;">
+                                            Dessa forma, garantimos que todas as informações de clientes estejam sempre sincronizadas e atualizadas.
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="loading" id="loadingUploadDashboard" style="display:none;">
+                                    <div class="spinner"></div>
+                                    <p>Processando e salvando no banco...</p>
+                                </div>
+                            </div>
+                        `;
+                        resultsEl.style.display = 'block';
+                        
+                        // Inicializar botão de upload do Dashboard
+                        setTimeout(() => {
+                            initDashboardUploadBtn();
+                        }, 100);
+                    }
+                } else {
+                    filteredHistoryData = [...allHistoryData];
+                    renderChartSectionDashboard(resultsEl);
+                    updateChartStats();
+                }
+            } catch (err) {
+                // Se o webhook de histórico completo não existir, usar apenas o último processamento
+                console.log('Webhook de histórico completo não disponível, carregando último processamento...');
+                try {
+                    const resUltimo = await fetch(WEBHOOK_GET);
+                    if (!resUltimo.ok) throw new Error('Nenhum dado disponível');
+                    
+                    const dataUltimo = await resUltimo.json();
+                    allHistoryData = [dataUltimo];
+                    filteredHistoryData = [...allHistoryData];
+                    renderChartSectionDashboard(resultsEl);
+                    updateChartStats();
+                    
+                    showAlert(`ℹ️ Exibindo apenas o último processamento. Configure o webhook "${WEBHOOK_GET_ALL}" para ver o histórico completo.`, 'success', 'Dashboard');
+                } catch (err2) {
+                    if (resultsEl) {
+                        resultsEl.innerHTML = `
+                            <div style="background: var(--bg-card); border: 1px solid var(--border-primary); border-radius: 20px; padding: 28px; margin-bottom: 32px; box-shadow: var(--shadow-sm);">
+                                <h2 style="color: var(--text-primary); font-size: 1.5em; font-weight: 700; margin-bottom: 24px;">🔄 Última Atualização</h2>
+                                
+                                <div class="info-bar" style="margin-bottom: 24px;">
+                                    <div class="info-item">
+                                        <span class="info-label">📁 Arquivo:</span>
+                                        <span class="info-value">N/A</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">📅 Data:</span>
+                                        <span class="info-value">N/A</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <button class="btn" id="singleUploadBtnDashboard">Enviar CSV</button>
+                                        <input type="file" id="fileInputDashboard" accept=".csv" style="display:none;">
+                                    </div>
+                                </div>
+                                
+                                <div class="help-section inside-card upload-help-section" onclick="toggleUploadHelp(event)" style="margin-top: 24px;">
+                                    <div class="help-header">
+                                        <div class="help-title">
+                                            <span>ℹ️</span>
+                                            <span>Instruções para Atualização</span>
+                                        </div>
+                                        <span class="help-toggle">▼</span>
+                                    </div>
+                                    <div class="help-content">
+                                        <p style="color: var(--text-secondary); font-size: 0.95em; line-height: 1.6; margin-bottom: 16px;">
+                                            Para manter o banco de dados sempre atualizado, envie ao final de cada expediente a lista de clientes exportada da Trinks.
+                                        </p>
+                                        <div style="background: var(--bg-secondary); border-left: 3px solid var(--accent-primary); padding: 14px; border-radius: 8px; margin-bottom: 16px;">
+                                            <p style="color: var(--text-primary); font-size: 0.9em; font-weight: 600; margin-bottom: 10px;">Certifique-se de:</p>
+                                            <ul style="color: var(--text-secondary); font-size: 0.9em; line-height: 1.8; padding-left: 20px; margin: 0;">
+                                                <li>Baixar a lista completa no formato CSV diretamente do sistema Trinks;</li>
+                                                <li>Importar o arquivo clicando no botão <strong style="color: var(--accent-primary);">"Enviar CSV"</strong> disponível no painel do sistema.</li>
+                                            </ul>
+                                        </div>
+                                        <p style="color: var(--text-secondary); font-size: 0.9em; line-height: 1.6; font-style: italic;">
+                                            Dessa forma, garantimos que todas as informações de clientes estejam sempre sincronizadas e atualizadas.
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="loading" id="loadingUploadDashboard" style="display:none;">
+                                    <div class="spinner"></div>
+                                    <p>Processando e salvando no banco...</p>
+                                </div>
+                            </div>
+                        `;
+                        resultsEl.style.display = 'block';
+                        
+                        // Inicializar botão de upload do Dashboard
+                        setTimeout(() => {
+                            initDashboardUploadBtn();
+                        }, 100);
+                    }
+                }
+            } finally {
+                if (loadingEl) loadingEl.style.display = 'none';
+            }
+        }
+
+        // RENDERIZAR SEÇÃO DE GRÁFICO PARA DASHBOARD
+        function renderChartSectionDashboard(container) {
+            if (!container) return;
+            
+            // Calcular datas min e max
+            const dates = allHistoryData.map(item => new Date(item.data_processamento));
+            const minDate = new Date(Math.min(...dates));
+            const maxDate = new Date(Math.max(...dates));
+            
+            const minDateStr = minDate.toISOString().split('T')[0];
+            const maxDateStr = maxDate.toISOString().split('T')[0];
+            
+            const chartHTML = `
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2>📊 Análise de Evolução</h2>
+                        <button class="btn" onclick="loadDashboard()" style="padding: 8px 16px; font-size: 0.9em;">
+                            <span>🔄</span>
+                            <span>Atualizar</span>
+                        </button>
+                        <div class="chart-controls">
+                            <div class="chart-type-selector">
+                                <button class="chart-type-btn active" onclick="changeChartType('line')">📈 Linha</button>
+                                <button class="chart-type-btn" onclick="changeChartType('bar')">📊 Barras</button>
+                            </div>
+                            <div class="date-filter">
+                                <label>De:</label>
+                                <input type="date" id="dateFilterStart" value="${minDateStr}" min="${minDateStr}" max="${maxDateStr}" onchange="applyDateFilterDashboard()">
+                                <label>Até:</label>
+                                <input type="date" id="dateFilterEnd" value="${maxDateStr}" min="${minDateStr}" max="${maxDateStr}" onchange="applyDateFilterDashboard()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="historyChart"></canvas>
+                    </div>
+                    <div class="chart-stats" id="chartStats"></div>
+                </div>
+            `;
+            
+            container.innerHTML = chartHTML;
+            container.style.display = 'block';
+            
+            // Renderizar gráfico
+            setTimeout(() => {
+                renderChart();
+                updateChartStats();
+                
+                // Carregar dados do último processamento para exibir qualidade
+                loadQualityStatsForDashboard();
+            }, 100);
+        }
+
+        // CARREGAR ESTATÍSTICAS DE QUALIDADE E CAMPOS FALTANTES PARA DASHBOARD
+        async function loadQualityStatsForDashboard() {
+            try {
+                const res = await fetch(WEBHOOK_GET);
+                if (!res.ok) return;
+                
+                const data = await res.json();
+                const resultsEl = document.getElementById('resultsDashboard');
+                if (!resultsEl) return;
+                
+                // Adicionar card de qualidade
+                const qualityHTML = renderQualityStatsCard(data);
+                if (qualityHTML) {
+                    resultsEl.insertAdjacentHTML('beforeend', qualityHTML);
+                }
+                
+                // Adicionar card de campos faltantes
+                const missingHTML = renderMissingStatsForDashboard(data);
+                if (missingHTML) {
+                    resultsEl.insertAdjacentHTML('beforeend', missingHTML);
+                }
+            } catch (err) {
+                console.log('Erro ao carregar estatísticas de qualidade:', err);
+            }
+        }
+
+        // APLICAR FILTRO DE DATA NA DASHBOARD
+        function applyDateFilterDashboard() {
+            const startInput = document.getElementById('dateFilterStart');
+            const endInput = document.getElementById('dateFilterEnd');
+            
+            const start = startInput ? new Date(startInput.value) : null;
+            const end = endInput ? new Date(endInput.value) : null;
+            
+            filteredHistoryData = allHistoryData.filter(item => {
+                const itemDate = new Date(item.data_processamento);
+                if (start && itemDate < start) return false;
+                if (end && itemDate > end) return false;
+                return true;
+            });
+            
+            // Re-renderizar gráfico e stats
+            renderChart();
+            updateChartStats();
+        }
+
+        // Verificar se a aba de dashboard já está ativa ao carregar a página e carregar dados
+        function loadInitialTab() {
+            // Verificar se há uma aba salva no localStorage
+            const savedTab = localStorage.getItem('activeTab');
+            let tabToLoad = savedTab || 'dashboard'; // Padrão é dashboard se não houver aba salva
+            
+            // Garantir que a aba existe
+            const tabElement = document.querySelector(`[data-tab="${tabToLoad}"]`);
+            if (!tabElement) {
+                tabToLoad = 'dashboard'; // Fallback para dashboard
+            }
+            
+            // Ativar a aba correta
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            const selectedTab = document.querySelector(`[data-tab="${tabToLoad}"]`);
+            const selectedContent = document.querySelector(`[data-content="${tabToLoad}"]`);
+            
+            if (selectedTab && selectedContent) {
+                selectedTab.classList.add('active');
+                selectedContent.classList.add('active');
+            }
+            
+            // Carregar conteúdo da aba
+            if (tabToLoad === 'dashboard') {
+                loadDashboard();
+            } else if (tabToLoad === 'historico') {
+                loadHistorico();
+            } else if (tabToLoad === 'historico-completo') {
+                loadHistoricoCompleto();
+            }
+        }
+
+        // Executar quando o DOM estiver pronto
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(loadInitialTab, 100);
+            });
+        } else {
+            // DOM já está pronto
+            setTimeout(loadInitialTab, 100);
+        }
 
         // UPLOAD DE ARQUIVO
         const uploadArea = document.getElementById('uploadArea');
@@ -635,6 +3191,11 @@
                 const data = await res.json();
                 displayResults(data, 'upload');
                 document.getElementById('uploadSection').classList.add('hidden');
+                
+                // Limpar cache do histórico para forçar reload
+                allHistoryData = [];
+                filteredHistoryData = [];
+                
                 showAlert('✅ Salvo no banco com sucesso!', 'success', 'Upload');
             } catch (err) {
                 showAlert(`❌ Erro: ${err.message}`, 'error', 'Upload');
@@ -643,6 +3204,128 @@
                 uploadBtn.disabled = false;
             }
         };
+
+        // FUNCIONALIDADE DO BOTÃO ÚNICO DE UPLOAD NA ABA DASHBOARD
+        function initDashboardUploadBtn() {
+            const dashboardUploadBtn = document.getElementById('singleUploadBtnDashboard');
+            if (dashboardUploadBtn) {
+                // Remove listeners antigos se existirem
+                const newBtn = dashboardUploadBtn.cloneNode(true);
+                dashboardUploadBtn.parentNode.replaceChild(newBtn, dashboardUploadBtn);
+                
+                const dashboardFileInput = document.getElementById('fileInputDashboard');
+                const currentBtn = document.getElementById('singleUploadBtnDashboard');
+                
+                if (currentBtn && dashboardFileInput) {
+                    currentBtn.onclick = () => {
+                        dashboardFileInput.click();
+                    };
+
+                    // Quando selecionar arquivo, fazer upload automático
+                    dashboardFileInput.onchange = async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        
+                        if (!file.name.endsWith('.csv')) {
+                            showAlert('⚠️ Selecione um arquivo CSV válido', 'error', 'Dashboard');
+                            dashboardFileInput.value = '';
+                            return;
+                        }
+
+                        const formData = new FormData();
+                        formData.append('file', file);
+
+                        const loadingEl = document.getElementById('loadingUploadDashboard');
+                        
+                        if (loadingEl) loadingEl.style.display = 'block';
+                        if (currentBtn) currentBtn.disabled = true;
+
+                        try {
+                            const res = await fetch(WEBHOOK_UPLOAD, { method: 'POST', body: formData });
+                            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                            
+                            const data = await res.json();
+                            
+                            // Limpar cache do histórico para forçar reload
+                            allHistoryData = [];
+                            filteredHistoryData = [];
+                            
+                            // Recarregar Dashboard após upload
+                            await loadDashboard();
+                            
+                            showAlert('✅ Salvo no banco com sucesso!', 'success', 'Dashboard');
+                        } catch (err) {
+                            showAlert(`❌ Erro: ${err.message}`, 'error', 'Dashboard');
+                        } finally {
+                            if (loadingEl) loadingEl.style.display = 'none';
+                            if (currentBtn) currentBtn.disabled = false;
+                            dashboardFileInput.value = '';
+                        }
+                    };
+                }
+            }
+        }
+
+        // FUNCIONALIDADE DO BOTÃO ÚNICO DE UPLOAD NA ABA HISTÓRICO
+        function initSingleUploadBtn() {
+            const singleUploadBtn = document.getElementById('singleUploadBtn');
+            if (singleUploadBtn) {
+                // Remove listeners antigos se existirem
+                const newBtn = singleUploadBtn.cloneNode(true);
+                singleUploadBtn.parentNode.replaceChild(newBtn, singleUploadBtn);
+                
+                const historicoFileInput = document.getElementById('fileInputHistorico');
+                const currentBtn = document.getElementById('singleUploadBtn');
+                
+                if (currentBtn && historicoFileInput) {
+                    currentBtn.onclick = () => {
+                        historicoFileInput.click();
+                    };
+
+                    // Quando selecionar arquivo, fazer upload automático
+                    historicoFileInput.onchange = async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        
+                        if (!file.name.endsWith('.csv')) {
+                            showAlert('⚠️ Selecione um arquivo CSV válido', 'error', 'UploadHistorico');
+                            historicoFileInput.value = '';
+                            return;
+                        }
+
+                        const formData = new FormData();
+                        formData.append('file', file);
+
+                        const loadingEl = document.getElementById('loadingUploadHistorico');
+                        
+                        if (loadingEl) loadingEl.style.display = 'block';
+                        if (currentBtn) currentBtn.disabled = true;
+
+                        try {
+                            const res = await fetch(WEBHOOK_UPLOAD, { method: 'POST', body: formData });
+                            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                            
+                            const data = await res.json();
+                            
+                            // Limpar cache do histórico para forçar reload
+                            allHistoryData = [];
+                            filteredHistoryData = [];
+                            
+                            // Recarregar histórico após upload
+                            await loadHistorico();
+                            
+                            showAlert('✅ Salvo no banco com sucesso!', 'success', 'UploadHistorico');
+                        } catch (err) {
+                            showAlert(`❌ Erro: ${err.message}`, 'error', 'UploadHistorico');
+                        } finally {
+                            if (loadingEl) loadingEl.style.display = 'none';
+                            if (currentBtn) currentBtn.disabled = false;
+                            historicoFileInput.value = '';
+                        }
+                    };
+                }
+            }
+        }
 
         // CARREGAR HISTÓRICO
         async function loadHistorico() {
@@ -668,49 +3351,162 @@
             const prefix = context === 'upload' ? 'Upload' : 'Historico';
             const container = document.getElementById(`results${prefix}`);
             
+            // Salvar dados
+            currentData[context] = data;
+            
             const total = data.total || 0;
             const completos = data.completos || 0;
             const incompletos = data.incompletos || 0;
             const pctCompleto = total > 0 ? ((completos / total) * 100).toFixed(1) : 0;
             const pctIncompleto = total > 0 ? ((incompletos / total) * 100).toFixed(1) : 0;
+            
+            console.log(`[${context}] Dados:`, {
+                total,
+                completos,
+                incompletos,
+                pctCompleto,
+                pctIncompleto
+            });
 
             container.innerHTML = `
-                <div class="info-bar">
-                    <div class="info-item">
-                        <span class="info-label">📁 Arquivo:</span>
-                        <span class="info-value">${data.nome_arquivo || 'N/A'}</span>
+                ${context === 'historico' ? `
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-primary); border-radius: 20px; padding: 28px; margin-bottom: 32px; box-shadow: var(--shadow-sm);">
+                        <h2 style="color: var(--text-primary); font-size: 1.5em; font-weight: 700; margin-bottom: 24px;">🔄 Última Atualização</h2>
+                        
+                        <div class="info-bar" style="margin-bottom: 24px;">
+                            <div class="info-item">
+                                <span class="info-label">📁 Arquivo:</span>
+                                <span class="info-value">${data.nome_arquivo || 'N/A'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">📅 Data:</span>
+                                <span class="info-value">${data.data_processamento ? formatDateBR(data.data_processamento) : formatDateBR(new Date())}</span>
+                            </div>
+                            <div class="info-item">
+                                <button class="btn" id="singleUploadBtn">Enviar CSV</button>
+                                <input type="file" id="fileInputHistorico" accept=".csv" style="display:none;">
+                            </div>
+                        </div>
+                        
+                        <div class="help-section inside-card upload-help-section" onclick="toggleUploadHelp(event)" style="margin-top: 24px;">
+                            <div class="help-header">
+                                <div class="help-title">
+                                    <span>ℹ️</span>
+                                    <span>Instruções para Atualização</span>
+                                </div>
+                                <span class="help-toggle">▼</span>
+                            </div>
+                            <div class="help-content">
+                                <p style="color: var(--text-secondary); font-size: 0.95em; line-height: 1.6; margin-bottom: 16px;">
+                                    Para manter o banco de dados sempre atualizado, envie ao final de cada expediente a lista de clientes exportada da Trinks.
+                                </p>
+                                <div style="background: var(--bg-secondary); border-left: 3px solid var(--accent-primary); padding: 14px; border-radius: 8px; margin-bottom: 16px;">
+                                    <p style="color: var(--text-primary); font-size: 0.9em; font-weight: 600; margin-bottom: 10px;">Certifique-se de:</p>
+                                    <ul style="color: var(--text-secondary); font-size: 0.9em; line-height: 1.8; padding-left: 20px; margin: 0;">
+                                        <li>Baixar a lista completa no formato CSV diretamente do sistema Trinks;</li>
+                                        <li>Importar o arquivo clicando no botão <strong style="color: var(--accent-primary);">"Enviar CSV"</strong> disponível no painel do sistema.</li>
+                                    </ul>
+                                </div>
+                                <p style="color: var(--text-secondary); font-size: 0.9em; line-height: 1.6; font-style: italic;">
+                                    Dessa forma, garantimos que todas as informações de clientes estejam sempre sincronizadas e atualizadas.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert" id="alertUploadHistorico"></div>
+                        <div class="loading" id="loadingUploadHistorico" style="display:none;">
+                            <div class="spinner"></div>
+                            <p>Processando e salvando no banco...</p>
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">📅 Data:</span>
-                        <span class="info-value">${data.data_processamento ? new Date(data.data_processamento).toLocaleString('pt-BR') : new Date().toLocaleString('pt-BR')}</span>
+                ` : `
+                    <div class="info-bar">
+                        <div class="info-item">
+                            <span class="info-label">📁 Arquivo:</span>
+                            <span class="info-value">${data.nome_arquivo || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📅 Data:</span>
+                            <span class="info-value">${data.data_processamento ? formatDateBR(data.data_processamento) : formatDateBR(new Date())}</span>
+                        </div>
                     </div>
-                    ${context === 'historico' ? '<div class="info-item"><button class="btn" onclick="loadHistorico()"><span>🔄</span><span>Atualizar</span></button></div>' : ''}
-                </div>
+                `}
 
-                <div class="stats-grid">
-                    <div class="stat-card complete" onclick="showTable('${context}', 'complete')">
-                        <div class="stat-header">
-                            <h3>Cadastros Completos</h3>
-                            <div class="stat-icon">✅</div>
-                        </div>
-                        <div class="stat-number">${completos}</div>
-                        <div class="stat-percentage">${pctCompleto}%</div>
-                        <div class="stat-hint">Clique para visualizar</div>
+                ${renderQualityStats(data)}
+
+                <div class="filters-section">
+                    <div class="filters-header">
+                        <h3>🔍 Filtros de Pesquisa</h3>
                     </div>
-                    <div class="stat-card incomplete" onclick="showTable('${context}', 'incomplete')">
-                        <div class="stat-header">
-                            <h3>Cadastros Incompletos</h3>
-                            <div class="stat-icon">⚠️</div>
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>Nome</label>
+                            <input type="text" id="filter-nome-${context}" placeholder="Buscar por nome..." value="${filters[context].nome}">
                         </div>
-                        <div class="stat-number">${incompletos}</div>
-                        <div class="stat-percentage">${pctIncompleto}%</div>
-                        <div class="stat-hint">Clique para visualizar</div>
+                        <div class="filter-group">
+                            <label>Telefone</label>
+                            <input type="text" id="filter-telefone-${context}" placeholder="Buscar por telefone..." value="${filters[context].telefone}">
+                        </div>
+                        <div class="filter-group">
+                            <label>E-mail</label>
+                            <input type="text" id="filter-email-${context}" placeholder="Buscar por e-mail..." value="${filters[context].email}">
+                        </div>
+                        <div class="filter-group">
+                            <label>Campo Faltante</label>
+                            <select id="filter-campo-${context}">
+                                <option value="">Todos</option>
+                                <option value="Nome" ${filters[context].campoFaltante === 'Nome' ? 'selected' : ''}>Nome</option>
+                                <option value="Data de Nascimento" ${filters[context].campoFaltante === 'Data de Nascimento' ? 'selected' : ''}>Data de Nascimento</option>
+                                <option value="E-mail" ${filters[context].campoFaltante === 'E-mail' ? 'selected' : ''}>E-mail</option>
+                                <option value="CEP" ${filters[context].campoFaltante === 'CEP' ? 'selected' : ''}>CEP</option>
+                                <option value="Telefone 1" ${filters[context].campoFaltante === 'Telefone 1' ? 'selected' : ''}>Telefone</option>
+                                <option value="Gênero" ${filters[context].campoFaltante === 'Gênero' ? 'selected' : ''}>Gênero</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-type-buttons">
+                        <button class="filter-type-btn ${activeFilterType[context] === 'total' ? 'active' : ''}" 
+                                onclick="setFilterType('${context}', 'total')" 
+                                data-filter="total">
+                            <span style="font-size: 1.2em;">📊</span>
+                            <span style="font-size: 0.85em;">Todos os Cadastros</span>
+                            <span style="font-size: 1.1em; font-weight: 700;">${total}</span>
+                        </button>
+                        <button class="filter-type-btn ${activeFilterType[context] === 'complete' ? 'active' : ''}" 
+                                onclick="setFilterType('${context}', 'complete')" 
+                                data-filter="complete">
+                            <span style="font-size: 1.2em;">✅</span>
+                            <span style="font-size: 0.85em;">Cadastros Completos</span>
+                            <span style="font-size: 1.1em; font-weight: 700;">${completos}</span>
+                        </button>
+                        <button class="filter-type-btn ${activeFilterType[context] === 'incomplete' ? 'active' : ''}" 
+                                onclick="setFilterType('${context}', 'incomplete')" 
+                                data-filter="incomplete">
+                            <span style="font-size: 1.2em;">⚠️</span>
+                            <span style="font-size: 0.85em;">Cadastros Incompletos</span>
+                            <span style="font-size: 1.1em; font-weight: 700;">${incompletos}</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button class="btn btn-secondary" onclick="clearFilters('${context}')">
+                            <span>🗑️</span>
+                            <span>Limpar</span>
+                        </button>
+                        <button class="btn" onclick="applyFilters('${context}')">
+                            <span>🔍</span>
+                            <span>Aplicar Filtros</span>
+                        </button>
                     </div>
                 </div>
 
                 <div class="table-section" id="table-${context}-complete">
                     <div class="table-header">
-                        <h2><span>✅</span><span>Cadastros Completos</span><span class="badge">${completos}</span></h2>
+                        <h2><span>✅</span><span>Cadastros Completos</span><span class="badge" id="badge-${context}-complete">${completos}</span></h2>
+                        <div style="font-size: 0.8em; color: var(--text-tertiary); font-weight: 500;">
+                            🔄 Ordenado por: <strong style="color: var(--accent-primary);">Qualidade (melhor → pior)</strong>
+                        </div>
                     </div>
                     <div class="table-container">
                         <table>
@@ -724,14 +3520,18 @@
                                     <th>CEP</th>
                                 </tr>
                             </thead>
-                            <tbody>${renderRows(data.cadastros_completos || [], false)}</tbody>
+                            <tbody id="tbody-${context}-complete"></tbody>
                         </table>
                     </div>
+                    <div class="pagination-wrapper" id="pagination-${context}-complete"></div>
                 </div>
 
                 <div class="table-section hidden" id="table-${context}-incomplete">
                     <div class="table-header">
-                        <h2><span>⚠️</span><span>Cadastros Incompletos</span><span class="badge red">${incompletos}</span></h2>
+                        <h2><span>⚠️</span><span>Cadastros Incompletos</span><span class="badge red" id="badge-${context}-incomplete">${incompletos}</span></h2>
+                        <div style="font-size: 0.8em; color: var(--text-tertiary); font-weight: 500;">
+                            🔄 Ordenado por: <strong style="color: var(--error);">Prioridade (mais urgente → menos urgente)</strong>
+                        </div>
                     </div>
                     <div class="table-container">
                         <table>
@@ -746,14 +3546,27 @@
                                     <th>Campos Faltantes</th>
                                 </tr>
                             </thead>
-                            <tbody>${renderRows(data.cadastros_incompletos || [], true)}</tbody>
+                            <tbody id="tbody-${context}-incomplete"></tbody>
                         </table>
                     </div>
+                    <div class="pagination-wrapper" id="pagination-${context}-incomplete"></div>
                 </div>
             `;
 
             container.style.display = 'block';
-            showTable(context, incompletos > completos ? 'incomplete' : 'complete');
+            
+            // Inicializar botão de upload se estiver na aba de histórico
+            if (context === 'historico') {
+                setTimeout(() => {
+                    initSingleUploadBtn();
+                }, 100);
+            }
+            
+            updateTables(context);
+            // Aplicar filtro padrão (Total) após renderização
+            setTimeout(() => {
+                setFilterType(context, activeFilterType[context] || 'total');
+            }, 50);
         }
 
         function renderRows(cadastros, showMissing) {
@@ -769,6 +3582,10 @@
                     return '-';
                 };
 
+                const qualityScore = calculateQualityScore(c);
+                const priorityScore = calculatePriority(c);
+                const validationIcon = getValidationIcon(c);
+                
                 const nome = getValue(['Nome', 'nome']);
                 const genero = getValue(['Gênero', 'Genero', 'genero']);
                 const tel = getValue(['Telefone 1', 'Telefone', 'telefone']);
@@ -776,31 +3593,98 @@
                 const data = getValue(['Data de Nascimento', 'Data Nascimento']);
                 const cep = getValue(['CEP', 'cep']);
 
+                // Detalhes dos algoritmos para tooltips
+                const qualityDetails = getQualityBreakdown(c);
+                const validationDetails = getDetailedValidation(c);
+                const priorityDetails = showMissing ? getPriorityBreakdown(c) : '';
+
+                // Estrutura do nome com algoritmos COMPACTOS E CLAROS
+                const nomeCompleto = `
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">${nome}</div>
+                        <div class="algorithms-container">
+                            <div class="algorithm-item">
+                                <span class="algorithm-label">Qualidade:</span>
+                                ${getQualityBadge(qualityScore)}
+                                <div class="algorithm-tooltip">
+                                    <strong style="color: var(--text-primary); display: block; margin-bottom: 10px; font-size: 1em;">📊 Score de Qualidade</strong>
+                                    ${qualityDetails}
+                                </div>
+                            </div>
+                            <span style="color: var(--text-tertiary);">•</span>
+                            <div class="algorithm-item">
+                                <span class="algorithm-label">Validação:</span>
+                                ${validationIcon || '<span style="color: var(--text-tertiary); font-size: 0.9em;">-</span>'}
+                                <div class="algorithm-tooltip">
+                                    <strong style="color: var(--text-primary); display: block; margin-bottom: 10px; font-size: 1em;">✅ Validação de Dados</strong>
+                                    ${validationDetails}
+                                </div>
+                            </div>
+                            ${showMissing ? `
+                            <span style="color: var(--text-tertiary);">•</span>
+                            <div class="algorithm-item">
+                                <span class="algorithm-label">Prioridade:</span>
+                                ${getPriorityBadge(priorityScore)}
+                                <div class="algorithm-tooltip">
+                                    <strong style="color: var(--text-primary); display: block; margin-bottom: 10px; font-size: 1em;">🔥 Prioridade</strong>
+                                    ${priorityDetails}
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
                 if (showMissing) {
                     const missing = (c.campos_faltantes || []).map(f => `<span class="missing-field">${f}</span>`).join(' ');
-                    return `<tr><td>${nome}</td><td>${genero}</td><td>${tel}</td><td>${email}</td><td>${data}</td><td>${cep}</td><td>${missing}</td></tr>`;
+                    return `<tr><td>${nomeCompleto}</td><td>${genero}</td><td>${tel}</td><td>${email}</td><td>${data}</td><td>${cep}</td><td>${missing}</td></tr>`;
                 }
-                return `<tr><td>${nome}</td><td>${genero}</td><td>${tel}</td><td>${email}</td><td>${data}</td><td>${cep}</td></tr>`;
+                return `<tr><td>${nomeCompleto}</td><td>${genero}</td><td>${tel}</td><td>${email}</td><td>${data}</td><td>${cep}</td></tr>`;
             }).join('');
         }
 
         function showTable(context, type) {
             const completeTable = document.getElementById(`table-${context}-complete`);
             const incompleteTable = document.getElementById(`table-${context}-incomplete`);
-            const completeCard = document.querySelector(`[data-content="${context}"] .stat-card.complete`);
-            const incompleteCard = document.querySelector(`[data-content="${context}"] .stat-card.incomplete`);
 
-            if (type === 'complete') {
+            if (type === 'total') {
+                // Mostrar ambas as tabelas
+                completeTable.classList.remove('hidden');
+                incompleteTable.classList.remove('hidden');
+            } else if (type === 'complete') {
                 completeTable.classList.remove('hidden');
                 incompleteTable.classList.add('hidden');
-                completeCard.classList.add('active');
-                incompleteCard.classList.remove('active');
             } else {
                 incompleteTable.classList.remove('hidden');
                 completeTable.classList.add('hidden');
-                incompleteCard.classList.add('active');
-                completeCard.classList.remove('active');
             }
+        }
+
+        function setFilterType(context, type) {
+            activeFilterType[context] = type;
+            
+            // Atualizar visual dos botões - procurar dentro do container de resultados
+            const prefix = context === 'upload' ? 'Upload' : 'Historico';
+            const container = document.getElementById(`results${prefix}`);
+            if (container) {
+                container.querySelectorAll('.filter-type-btn').forEach(btn => {
+                    const btnFilter = btn.getAttribute('data-filter');
+                    if (btnFilter === type) {
+                        btn.style.background = 'var(--accent-primary)';
+                        btn.style.color = 'white';
+                        btn.style.borderColor = 'var(--accent-primary)';
+                        btn.classList.add('active');
+                    } else {
+                        btn.style.background = 'var(--bg-secondary)';
+                        btn.style.color = 'var(--text-primary)';
+                        btn.style.borderColor = 'var(--border-primary)';
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Mostrar tabela(s) correspondente(s)
+            showTable(context, type);
         }
 
         function showAlert(msg, type, context) {
@@ -812,6 +3696,772 @@
         function hideAlert(context) {
             document.getElementById(`alert${context}`).className = 'alert';
         }
+
+        // FUNÇÕES DE FILTRO
+        function applyFilters(context) {
+            filters[context].nome = document.getElementById(`filter-nome-${context}`).value.toLowerCase();
+            filters[context].telefone = document.getElementById(`filter-telefone-${context}`).value;
+            filters[context].email = document.getElementById(`filter-email-${context}`).value.toLowerCase();
+            filters[context].campoFaltante = document.getElementById(`filter-campo-${context}`).value;
+            
+            // Resetar paginação
+            pagination[context].complete.currentPage = 1;
+            pagination[context].incomplete.currentPage = 1;
+            
+            updateTables(context);
+        }
+
+        function clearFilters(context) {
+            filters[context] = { nome: '', telefone: '', email: '', campoFaltante: '' };
+            document.getElementById(`filter-nome-${context}`).value = '';
+            document.getElementById(`filter-telefone-${context}`).value = '';
+            document.getElementById(`filter-email-${context}`).value = '';
+            document.getElementById(`filter-campo-${context}`).value = '';
+            
+            // Resetar paginação
+            pagination[context].complete.currentPage = 1;
+            pagination[context].incomplete.currentPage = 1;
+            
+            updateTables(context);
+        }
+
+        function filterCadastros(cadastros, context, showMissing) {
+            let filtered = cadastros.filter(c => {
+                const d = c.dados || {};
+                const getValue = (keys) => {
+                    for (let k of keys) if (d[k]) return String(d[k]).toLowerCase();
+                    return '';
+                };
+
+                const nome = getValue(['Nome', 'nome']);
+                const tel = getValue(['Telefone 1', 'Telefone', 'telefone']);
+                const email = getValue(['E-mail', 'Email', 'email']);
+
+                // Aplicar filtros
+                if (filters[context].nome && !nome.includes(filters[context].nome)) return false;
+                if (filters[context].telefone && !tel.includes(filters[context].telefone)) return false;
+                if (filters[context].email && !email.includes(filters[context].email)) return false;
+                
+                // Filtro de campo faltante (apenas para incompletos)
+                if (showMissing && filters[context].campoFaltante) {
+                    const camposFaltantes = c.campos_faltantes || [];
+                    if (!camposFaltantes.includes(filters[context].campoFaltante)) return false;
+                }
+
+                return true;
+            });
+
+            // 4. ORDENAÇÃO AUTOMÁTICA (4º ALGORITMO)
+            if (showMissing) {
+                // Ordenar INCOMPLETOS por PRIORIDADE (maior urgência primeiro)
+                filtered.sort((a, b) => {
+                    const priorityA = calculatePriority(a);
+                    const priorityB = calculatePriority(b);
+                    console.log(`[ALGORITMO 4 - PRIORIDADE] ${a.dados?.Nome}: ${priorityA} vs ${b.dados?.Nome}: ${priorityB}`);
+                    return priorityB - priorityA; // Decrescente (maior prioridade primeiro)
+                });
+            } else {
+                // Ordenar COMPLETOS por QUALIDADE (melhor score primeiro)
+                filtered.sort((a, b) => {
+                    const qualityA = calculateQualityScore(a);
+                    const qualityB = calculateQualityScore(b);
+                    console.log(`[ALGORITMO 4 - QUALIDADE] ${a.dados?.Nome}: ${qualityA} vs ${b.dados?.Nome}: ${qualityB}`);
+                    return qualityB - qualityA; // Decrescente (melhor qualidade primeiro)
+                });
+            }
+
+            console.log(`[ALGORITMO 4] Ordenação aplicada com sucesso! ${filtered.length} cadastros ordenados.`);
+            return filtered;
+        }
+
+        function updateTables(context) {
+            if (!currentData[context]) return;
+
+            const data = currentData[context];
+            
+            // Filtrar dados
+            const completosFiltrados = filterCadastros(data.cadastros_completos || [], context, false);
+            const incompletosFiltrados = filterCadastros(data.cadastros_incompletos || [], context, true);
+
+            // Atualizar badges
+            document.getElementById(`badge-${context}-complete`).textContent = completosFiltrados.length;
+            document.getElementById(`badge-${context}-incomplete`).textContent = incompletosFiltrados.length;
+
+            // Renderizar tabelas com paginação
+            renderTable(context, 'complete', completosFiltrados, false);
+            renderTable(context, 'incomplete', incompletosFiltrados, true);
+        }
+
+        function renderTable(context, type, cadastros, showMissing) {
+            const tbody = document.getElementById(`tbody-${context}-${type}`);
+            const paginationDiv = document.getElementById(`pagination-${context}-${type}`);
+            const pag = pagination[context][type];
+
+            // Calcular paginação
+            const totalItems = cadastros.length;
+            const totalPages = Math.ceil(totalItems / pag.pageSize);
+            const startIndex = (pag.currentPage - 1) * pag.pageSize;
+            const endIndex = Math.min(startIndex + pag.pageSize, totalItems);
+            const currentItems = cadastros.slice(startIndex, endIndex);
+
+            // Renderizar linhas
+            tbody.innerHTML = renderRows(currentItems, showMissing);
+
+            // Renderizar controles de paginação
+            if (totalItems > 0) {
+                paginationDiv.innerHTML = `
+                    <div class="pagination-info">
+                        Exibindo ${startIndex + 1}-${endIndex} de ${totalItems}
+                    </div>
+                    <div class="pagination-controls">
+                        <div class="page-size-selector">
+                            <label>Por página:</label>
+                            <select onchange="changePageSize('${context}', '${type}', this.value)">
+                                <option value="10" ${pag.pageSize === 10 ? 'selected' : ''}>10</option>
+                                <option value="25" ${pag.pageSize === 25 ? 'selected' : ''}>25</option>
+                                <option value="50" ${pag.pageSize === 50 ? 'selected' : ''}>50</option>
+                                <option value="100" ${pag.pageSize === 100 ? 'selected' : ''}>100</option>
+                            </select>
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="btn-pagination" onclick="changePage('${context}', '${type}', ${pag.currentPage - 1})" ${pag.currentPage === 1 ? 'disabled' : ''}>
+                                ← Anterior
+                            </button>
+                            <span style="color: #8b949e; padding: 0 10px;">
+                                Página ${pag.currentPage} de ${totalPages}
+                            </span>
+                            <button class="btn-pagination" onclick="changePage('${context}', '${type}', ${pag.currentPage + 1})" ${pag.currentPage >= totalPages ? 'disabled' : ''}>
+                                Próxima →
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                paginationDiv.innerHTML = '';
+            }
+        }
+
+        function changePage(context, type, newPage) {
+            pagination[context][type].currentPage = newPage;
+            updateTables(context);
+        }
+
+        function changePageSize(context, type, newSize) {
+            pagination[context][type].pageSize = parseInt(newSize);
+            pagination[context][type].currentPage = 1;
+            updateTables(context);
+        }
+
+        // FUNÇÃO PARA RENDERIZAR CARDS DE CAMPOS FALTANTES (com filtro onclick)
+        function renderMissingStats(data, context) {
+            const incompletos = data.cadastros_incompletos || [];
+            if (incompletos.length === 0) return '';
+
+            // Contar campos faltantes
+            const camposCounts = {};
+            incompletos.forEach(c => {
+                (c.campos_faltantes || []).forEach(campo => {
+                    camposCounts[campo] = (camposCounts[campo] || 0) + 1;
+                });
+            });
+
+            // Ordenar por quantidade
+            const camposArray = Object.entries(camposCounts).sort((a, b) => b[1] - a[1]);
+            
+            if (camposArray.length === 0) return '';
+
+            const cards = camposArray.map(([campo, count]) => {
+                const percent = ((count / incompletos.length) * 100).toFixed(1);
+                return `
+                    <div class="missing-stat-card" onclick="filterByCampoFaltante('${context}', '${campo}')">
+                        <h4>${campo}</h4>
+                        <div class="missing-stat-number">${count}</div>
+                        <div class="missing-stat-percent">${percent}%</div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="missing-stats-section">
+                    <div class="missing-stats-header">
+                        <h3>📊 Campos Faltantes</h3>
+                    </div>
+                    <div class="missing-stats-grid">
+                        ${cards}
+                    </div>
+                </div>
+            `;
+        }
+
+        // FUNÇÃO PARA RENDERIZAR CARDS DE CAMPOS FALTANTES PARA DASHBOARD (sem onclick)
+        function renderMissingStatsForDashboard(data) {
+            const incompletos = data.cadastros_incompletos || [];
+            if (incompletos.length === 0) return '';
+
+            // Contar campos faltantes
+            const camposCounts = {};
+            incompletos.forEach(c => {
+                (c.campos_faltantes || []).forEach(campo => {
+                    camposCounts[campo] = (camposCounts[campo] || 0) + 1;
+                });
+            });
+
+            // Ordenar por quantidade
+            const camposArray = Object.entries(camposCounts).sort((a, b) => b[1] - a[1]);
+            
+            if (camposArray.length === 0) return '';
+
+            const cards = camposArray.map(([campo, count]) => {
+                const percent = ((count / incompletos.length) * 100).toFixed(1);
+                return `
+                    <div class="missing-stat-card" style="cursor: default;">
+                        <h4>${campo}</h4>
+                        <div class="missing-stat-number">${count}</div>
+                        <div class="missing-stat-percent">${percent}%</div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="missing-stats-section" style="margin-top: 32px;">
+                    <div class="missing-stats-header">
+                        <h3>📊 Campos Faltantes Mais Comuns</h3>
+                    </div>
+                    <div class="missing-stats-grid">
+                        ${cards}
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterByCampoFaltante(context, campo) {
+            document.getElementById(`filter-campo-${context}`).value = campo;
+            filters[context].campoFaltante = campo;
+            pagination[context].incomplete.currentPage = 1;
+            updateTables(context);
+            showTable(context, 'incomplete');
+            
+            // Highlight do card
+            document.querySelectorAll(`[data-content="${context}"] .missing-stat-card`).forEach(card => {
+                card.classList.remove('active');
+            });
+            event.target.closest('.missing-stat-card').classList.add('active');
+        }
+
+        // FUNÇÃO PARA RENDERIZAR INDICADORES DE PROGRESSO
+        function renderProgress(data, type) {
+            if (!data.progresso || !data.progresso[type]) return '';
+            
+            const progress = data.progresso[type];
+            const diff = progress.diferenca || 0;
+            const diffPercent = progress.diferenca_percentual || 0;
+            
+            if (diff === 0) {
+                return `<div class="stat-progress progress-neutral">
+                    <span class="progress-icon">━</span>
+                    <span>Sem alteração</span>
+                </div>`;
+            }
+            
+            const isPositive = diff > 0;
+            const cssClass = type === 'completos' 
+                ? (isPositive ? 'progress-up' : 'progress-down')
+                : (isPositive ? 'progress-down' : 'progress-up');
+            const icon = isPositive ? '▲' : '▼';
+            const signal = isPositive ? '+' : '';
+            
+            return `<div class="stat-progress ${cssClass}">
+                <span class="progress-icon">${icon}</span>
+                <span>${signal}${diff} (${signal}${diffPercent.toFixed(1)}%)</span>
+            </div>`;
+        }
+
+        // CARREGAR HISTÓRICO COMPLETO
+        async function loadHistoricoCompleto() {
+            const loading = document.getElementById('loadingHistoricoCompleto');
+            const container = document.getElementById('historicoCompletoContainer');
+            
+            // Destruir gráfico anterior
+            if (chartInstance) {
+                chartInstance.destroy();
+                chartInstance = null;
+            }
+            
+            // Limpar tudo
+            container.innerHTML = '';
+            allHistoryData = [];
+            filteredHistoryData = [];
+            
+            loading.style.display = 'block';
+            hideAlert('HistoricoCompleto');
+
+            try {
+                // Tentar carregar todos os históricos
+                const res = await fetch(WEBHOOK_GET_ALL);
+                if (!res.ok) throw new Error(`Webhook não configurado (HTTP ${res.status})`);
+                
+                const data = await res.json();
+                allHistoryData = Array.isArray(data) ? data : [data];
+                
+                if (allHistoryData.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-history">
+                            <div class="no-history-icon">📭</div>
+                            <h2>Nenhum histórico encontrado</h2>
+                            <p>Faça o primeiro upload para começar o histórico.</p>
+                        </div>
+                    `;
+                } else {
+                    filteredHistoryData = [...allHistoryData];
+                    displayHistoricoCompleto(allHistoryData);
+                }
+            } catch (err) {
+                // Se o webhook de histórico completo não existir, usar apenas o último processamento
+                console.log('Webhook de histórico completo não disponível, carregando último processamento...');
+                try {
+                    const resUltimo = await fetch(WEBHOOK_GET);
+                    if (!resUltimo.ok) throw new Error('Nenhum dado disponível');
+                    
+                    const dataUltimo = await resUltimo.json();
+                    allHistoryData = [dataUltimo];
+                    filteredHistoryData = [...allHistoryData];
+                    displayHistoricoCompleto(allHistoryData);
+                    
+                    showAlert(`ℹ️ Exibindo apenas o último processamento. Configure o webhook "${WEBHOOK_GET_ALL}" para ver o histórico completo.`, 'success', 'HistoricoCompleto');
+                } catch (err2) {
+                    container.innerHTML = `
+                        <div class="no-history">
+                            <div class="no-history-icon">⚠️</div>
+                            <h2>Webhook não configurado</h2>
+                            <p style="margin-bottom: 20px;">Para visualizar o histórico completo, configure o webhook:</p>
+                            <div style="background: #161b22; border: 1px solid #30363d; padding: 20px; border-radius: 8px; text-align: left; max-width: 600px; margin: 0 auto;">
+                                <p style="color: #8b949e; font-size: 0.9em; margin-bottom: 10px;">Endpoint:</p>
+                                <code style="background: #0d1117; padding: 8px 12px; border-radius: 4px; display: block; color: #10a37f; word-break: break-all;">${WEBHOOK_GET_ALL}</code>
+                                <p style="color: #8b949e; font-size: 0.9em; margin-top: 20px;">Este webhook deve retornar um array com todos os processamentos salvos no banco de dados.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // RENDERIZAR SEÇÃO DE GRÁFICO
+        function renderChartSection() {
+            const container = document.getElementById('historicoCompletoContainer');
+            
+            // Calcular datas min e max
+            const dates = allHistoryData.map(item => new Date(item.data_processamento));
+            const minDate = new Date(Math.min(...dates));
+            const maxDate = new Date(Math.max(...dates));
+            
+            const minDateStr = minDate.toISOString().split('T')[0];
+            const maxDateStr = maxDate.toISOString().split('T')[0];
+            
+            const chartHTML = `
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2>📊 Análise de Evolução</h2>
+                        <button class="btn" onclick="loadHistoricoCompleto()" style="padding: 8px 16px; font-size: 0.9em;">
+                            <span>🔄</span>
+                            <span>Atualizar</span>
+                        </button>
+                        <div class="chart-controls">
+                            <div class="chart-type-selector">
+                                <button class="chart-type-btn active" onclick="changeChartType('line')">📈 Linha</button>
+                                <button class="chart-type-btn" onclick="changeChartType('bar')">📊 Barras</button>
+                            </div>
+                            <div class="date-filter">
+                                <label>De:</label>
+                                <input type="date" id="dateFilterStart" value="${minDateStr}" min="${minDateStr}" max="${maxDateStr}" onchange="applyDateFilter()">
+                                <label>Até:</label>
+                                <input type="date" id="dateFilterEnd" value="${maxDateStr}" min="${minDateStr}" max="${maxDateStr}" onchange="applyDateFilter()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="historyChart"></canvas>
+                    </div>
+                    <div class="chart-stats" id="chartStats"></div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('afterbegin', chartHTML);
+            
+            // Renderizar gráfico
+            renderChart();
+            updateChartStats();
+        }
+
+        // RENDERIZAR GRÁFICO
+        function renderChart() {
+            const ctx = document.getElementById('historyChart');
+            if (!ctx) return;
+            
+            // Destruir gráfico anterior se existir
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            
+            // Preparar dados
+            const sortedData = [...filteredHistoryData].sort((a, b) => 
+                new Date(a.data_processamento) - new Date(b.data_processamento)
+            );
+            
+            const labels = sortedData.map(item => formatDateShortBR(item.data_processamento));
+            
+            const completosData = sortedData.map(item => item.completos || 0);
+            const incompletosData = sortedData.map(item => item.incompletos || 0);
+            const totalData = sortedData.map(item => item.total || 0);
+            
+            // Configurar gráfico
+            chartInstance = new Chart(ctx, {
+                type: currentChartType,
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Completos',
+                            data: completosData,
+                            borderColor: '#10a37f',
+                            backgroundColor: 'rgba(16, 163, 127, 0.2)',
+                            borderWidth: 2,
+                            fill: currentChartType === 'line',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Incompletos',
+                            data: incompletosData,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                            borderWidth: 2,
+                            fill: currentChartType === 'line',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Total',
+                            data: totalData,
+                            borderColor: '#8b949e',
+                            backgroundColor: 'rgba(139, 148, 158, 0.2)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.4,
+                            borderDash: [5, 5]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#c9d1d9',
+                                font: {
+                                    size: 12,
+                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#161b22',
+                            titleColor: '#c9d1d9',
+                            bodyColor: '#c9d1d9',
+                            borderColor: '#30363d',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#8b949e',
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: '#30363d'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#8b949e',
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: '#30363d'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ATUALIZAR ESTATÍSTICAS DO GRÁFICO
+        function updateChartStats() {
+            const statsContainer = document.getElementById('chartStats');
+            if (!statsContainer || filteredHistoryData.length === 0) return;
+            
+            const totalProcessamentos = filteredHistoryData.length;
+            
+            // Ordenar para pegar o último processamento (mais recente)
+            const sortedByDate = [...filteredHistoryData].sort((a, b) => 
+                new Date(b.data_processamento) - new Date(a.data_processamento)
+            );
+            const ultimoProcessamento = sortedByDate[0] || {};
+            
+            const totalCadastrosUltimo = ultimoProcessamento.total || 0;
+            const totalCompletos = filteredHistoryData.reduce((sum, item) => sum + (item.completos || 0), 0);
+            const totalIncompletos = filteredHistoryData.reduce((sum, item) => sum + (item.incompletos || 0), 0);
+            const totalCadastrosGeral = filteredHistoryData.reduce((sum, item) => sum + (item.total || 0), 0);
+            
+            const mediaCompletos = totalProcessamentos > 0 ? Math.round(totalCompletos / totalProcessamentos) : 0;
+            const mediaIncompletos = totalProcessamentos > 0 ? (totalIncompletos / totalProcessamentos).toFixed(1) : 0;
+            const taxaSucesso = totalCadastrosGeral > 0 ? ((totalCompletos / totalCadastrosGeral) * 100).toFixed(1) : 0;
+            
+            // Calcular tendência
+            const sortedData = [...filteredHistoryData].sort((a, b) => 
+                new Date(a.data_processamento) - new Date(b.data_processamento)
+            );
+            
+            let tendencia = 'neutral';
+            if (sortedData.length >= 2) {
+                const primeiro = sortedData[0].completos || 0;
+                const ultimo = sortedData[sortedData.length - 1].completos || 0;
+                tendencia = ultimo > primeiro ? 'up' : (ultimo < primeiro ? 'down' : 'neutral');
+            }
+            
+            const tendenciaIcon = tendencia === 'up' ? '▲' : (tendencia === 'down' ? '▼' : '━');
+            const tendenciaClass = `trend-${tendencia}`;
+            
+            statsContainer.innerHTML = `
+                <div class="chart-stat-card">
+                    <div class="chart-stat-label">Total Processamentos</div>
+                    <div class="chart-stat-value">${totalProcessamentos}</div>
+                </div>
+                <div class="chart-stat-card">
+                    <div class="chart-stat-label">Total Cadastros</div>
+                    <div class="chart-stat-value">${totalCadastrosUltimo}</div>
+                </div>
+                <div class="chart-stat-card">
+                    <div class="chart-stat-label">Média de Completos</div>
+                    <div class="chart-stat-value">${mediaCompletos}</div>
+                    <div class="chart-stat-trend ${tendenciaClass}">
+                        <span>${tendenciaIcon}</span>
+                        <span>Tendência</span>
+                    </div>
+                </div>
+                <div class="chart-stat-card">
+                    <div class="chart-stat-label">Taxa de Sucesso</div>
+                    <div class="chart-stat-value">${taxaSucesso}%</div>
+                </div>
+            `;
+        }
+
+        // MUDAR TIPO DE GRÁFICO
+        function changeChartType(type) {
+            currentChartType = type;
+            
+            // Atualizar botões
+            document.querySelectorAll('.chart-type-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Re-renderizar gráfico
+            renderChart();
+        }
+
+        // APLICAR FILTRO DE DATA
+        function applyDateFilter() {
+            const startInput = document.getElementById('dateFilterStart');
+            const endInput = document.getElementById('dateFilterEnd');
+            
+            if (!startInput || !endInput) return;
+            
+            const start = startInput.value ? new Date(startInput.value) : null;
+            const end = endInput.value ? new Date(endInput.value + 'T23:59:59') : null;
+            
+            // Filtrar dados
+            filteredHistoryData = allHistoryData.filter(item => {
+                const itemDate = new Date(item.data_processamento);
+                if (start && itemDate < start) return false;
+                if (end && itemDate > end) return false;
+                return true;
+            });
+            
+            // Re-renderizar lista de histórico
+            displayHistoricoCompleto(filteredHistoryData);
+        }
+
+        // EXIBIR HISTÓRICO COMPLETO
+        function displayHistoricoCompleto(history) {
+            console.log('displayHistoricoCompleto chamado com:', history.length, 'items');
+            
+            // Verificar se já existe lista de histórico
+            let historyListContainer = document.querySelector('.history-list');
+            
+            // Se não existir, buscar container principal
+            if (!historyListContainer) {
+                const container = document.getElementById('historicoCompletoContainer');
+                historyListContainer = container;
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            const sortedHistory = [...history].sort((a, b) => {
+                const dateA = new Date(a.data_processamento || 0);
+                const dateB = new Date(b.data_processamento || 0);
+                return dateB - dateA;
+            });
+            
+            console.log('Histórico ordenado:', sortedHistory.length, 'items');
+
+            const historyHTML = sortedHistory.map((item, index) => {
+                const total = item.total || 0;
+                const completos = item.completos || 0;
+                const incompletos = item.incompletos || 0;
+                const pctCompleto = total > 0 ? ((completos / total) * 100).toFixed(1) : 0;
+                const pctIncompleto = total > 0 ? ((incompletos / total) * 100).toFixed(1) : 0;
+                const dataFormatada = formatDateBR(item.data_processamento);
+
+                return `
+                    <div class="history-item" data-index="${index}">
+                        <div class="history-header">
+                            <div class="history-title">
+                                <h3>📁 ${item.nome_arquivo || 'Sem nome'}</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span class="history-date">📅 ${dataFormatada}</span>
+                                <span class="expand-icon">▼</span>
+                            </div>
+                        </div>
+                        
+                        <div class="history-stats">
+                            <div class="history-stat">
+                                <div class="history-stat-label">Total</div>
+                                <div class="history-stat-value">${total}</div>
+                            </div>
+                            <div class="history-stat">
+                                <div class="history-stat-label">✅ Completos</div>
+                                <div class="history-stat-value" style="color: #10a37f;">${completos} (${pctCompleto}%)</div>
+                            </div>
+                            <div class="history-stat">
+                                <div class="history-stat-label">⚠️ Incompletos</div>
+                                <div class="history-stat-value" style="color: #ef4444;">${incompletos} (${pctIncompleto}%)</div>
+                            </div>
+                        </div>
+
+                        <div class="history-details" id="history-details-${index}">
+                            ${renderHistoryDetails(item)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Verificar se já existe a lista ou criar
+            let historyList = document.querySelector('.history-list');
+            
+            if (historyList) {
+                // Remover listener antigo
+                historyList.removeAttribute('data-listener-attached');
+                historyList.onclick = null;
+                // Atualizar lista existente
+                historyList.innerHTML = historyHTML;
+            } else {
+                // Criar nova lista
+                const container = document.getElementById('historicoCompletoContainer');
+                container.insertAdjacentHTML('beforeend', `<div class="history-list">${historyHTML}</div>`);
+                historyList = container.querySelector('.history-list');
+            }
+            
+            // SEMPRE adicionar event delegation
+            if (historyList) {
+                historyList.onclick = function(e) {
+                    // Encontrar o history-item mais próximo
+                    const historyItem = e.target.closest('.history-item');
+                    if (historyItem) {
+                        console.log('Card clicado, expandindo...');
+                        historyItem.classList.toggle('expanded');
+                    }
+                };
+                console.log('Event listener adicionado aos cards de histórico');
+            }
+        }
+
+        function renderHistoryDetails(item) {
+            const incompletos = item.cadastros_incompletos || [];
+            const incompletosCount = item.incompletos || 0;
+            const camposAgregados = item.campos_faltantes_agregados || {};
+            
+            // Se tem campos agregados do webhook (novo formato)
+            if (Object.keys(camposAgregados).length > 0) {
+                const camposArray = Object.entries(camposAgregados).sort((a, b) => b[1] - a[1]);
+                
+                return `
+                    <h4 style="color: #c9d1d9; margin-bottom: 15px; font-size: 1em;">📊 Campos Faltantes</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                        ${camposArray.map(([campo, count]) => {
+                            const percent = incompletosCount > 0 ? ((count / incompletosCount) * 100).toFixed(1) : 0;
+                            return `
+                                <div style="background: #0d1117; padding: 12px; border-radius: 6px; border: 1px solid #30363d;">
+                                    <div style="color: #8b949e; font-size: 0.75em; margin-bottom: 5px;">${campo}</div>
+                                    <div style="color: #ef4444; font-size: 1.2em; font-weight: 700;">${count} <span style="color: #8b949e; font-size: 0.7em;">(${percent}%)</span></div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+            
+            // Fallback: contar campos faltantes dos cadastros individuais (formato antigo)
+            if (incompletos.length > 0) {
+                const camposCounts = {};
+                incompletos.forEach(c => {
+                    (c.campos_faltantes || []).forEach(campo => {
+                        camposCounts[campo] = (camposCounts[campo] || 0) + 1;
+                    });
+                });
+
+                const camposArray = Object.entries(camposCounts).sort((a, b) => b[1] - a[1]);
+                
+                if (camposArray.length > 0) {
+                    return `
+                        <h4 style="color: #c9d1d9; margin-bottom: 15px; font-size: 1em;">📊 Campos Faltantes</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                            ${camposArray.map(([campo, count]) => {
+                                const percent = ((count / incompletos.length) * 100).toFixed(1);
+                                return `
+                                    <div style="background: #0d1117; padding: 12px; border-radius: 6px; border: 1px solid #30363d;">
+                                        <div style="color: #8b949e; font-size: 0.75em; margin-bottom: 5px;">${campo}</div>
+                                        <div style="color: #ef4444; font-size: 1.2em; font-weight: 700;">${count} <span style="color: #8b949e; font-size: 0.7em;">(${percent}%)</span></div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+            }
+            
+            // Se não tem nenhum dado
+            return '<p style="text-align: center; color: #8b949e; padding: 20px;">Sem dados detalhados disponíveis</p>';
+        }
+
+        function toggleHistoryItem(index, event) {
+            // Prevenir propagação se clicar em elementos internos
+            if (event && event.target) {
+                event.stopPropagation();
+            }
+            
+            const item = document.querySelectorAll('.history-item')[index];
+            if (item) {
+                item.classList.toggle('expanded');
+            }
+        }
+
     </script>
 </body>
 </html>
